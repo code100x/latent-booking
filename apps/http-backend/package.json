@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc -b",
     "start": "NODE_ENV=production node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "npm run build && NODE_ENV=dev node dist/index.js"
   },
   "devDependencies": {
     "@repo/db": "workspace:*",
@@ -20,8 +20,13 @@
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "authenticator": "^1.1.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
     "zod": "^3.24.1"
+=======
+    "twilio": "^5.4.2"
+>>>>>>> 4835732643a8d6184db29177f6e55afe18219b1d
   }
 }
