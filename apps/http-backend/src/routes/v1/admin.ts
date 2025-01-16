@@ -13,47 +13,6 @@ import { client } from "@repo/db/client";
 
 const router: Router = Router();
 
-<<<<<<< HEAD
-router.post("/signin", (req, res) => {
-    const { phoneNumber } = req.body; // added directly from in db
-    // we have to zod valdation.
-    const user; // db call;
-
-    if(!user) {
-        res.status(404).json({
-            message: "User or password is incorrect"
-        })
-    };
-
-     const totp = generateToken(phoneNumber + "SIGNUP"); // send to phone number
-
-    return res.json({
-        msg: "OTP sent"
-    })
-})
-
-router.post("/signin/verify", (req, res) => {
-    const { phoneNumber, otp } = req.body;
-    if (!verifyToken(phoneNumber + "SIGNUP", otp)) {
-        res.status(400).json({
-            message: "Invalid token"
-        })
-        return;
-    }
-    const user; // db call
-    const token = jwt.sign({
-        id: user.id
-    }, "secret", {
-        expiresIn: "1h"
-    })
-    return res.json({
-        token
-    })
-})
-
-
-export default router;
-=======
 // add Signin from the kirat code
 
 router.post('/event', adminMiddleware, async (req, res) => {
@@ -152,4 +111,3 @@ router.delete('/event/:id', adminMiddleware, async (req, res) => {
 
 
 export default router;
->>>>>>> recovered-branch
