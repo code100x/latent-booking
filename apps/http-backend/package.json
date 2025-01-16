@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "authenticator": "^1.1.5",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.24.1"
   }
 }
