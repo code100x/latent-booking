@@ -1,4 +1,6 @@
-import express from "express";
+require("dotenv").config();
+
+import express, {Request, Response, NextFunction} from "express";
 import v1Router from "./routes/v1";
 
 const app = express();
