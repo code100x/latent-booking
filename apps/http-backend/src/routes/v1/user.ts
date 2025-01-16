@@ -3,21 +3,32 @@ import { Router } from "express";
 import { client } from "@repo/db/client"; 
 import jwt from "jsonwebtoken";
 import { JWT_PASSWORD } from "../../config";
+import { SignUpSchema, VerifySignUpSchema } from "../../types";
 
 const router: Router = Router();
 
 router.post("/signup", async (req, res) => {
-    const number = req.body.phoneNumber;
+    const parseData = SignUpSchema.parse(req.body);
+    if (!parseData) {
+        res.json({
+            message: "Invalid data"
+        })
+        return
+    }
+
+    const name = parseData.name;
+    const number = parseData.phoneNumber;
+
     const totp = generateToken(number + "SIGNUP");
     // send toipt to phone number
 
     const user = await client.user.upsert({
         where: {
-            number
+            number: number
         },
         create: {
-            number,
-            name: ""
+            number: number,
+            name: name,
         },
         update: {
 
@@ -35,16 +46,24 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/signup/verify", async (req, res) => {
-    const number = req.body.phoneNumber;
-    const name = req.body.name;
-    if (!verifyToken(number + "SIGNUP", req.body.otp)) {
+    const parseData = VerifySignUpSchema.parse(req.body);
+    if (!parseData) {
+        res.json({
+            message: "Invalid data"
+        })
+        return
+    }
+    const number = parseData.phoneNumber;
+    const name = parseData.name;
+    const otp = parseData.otp;
+    if (!verifyToken(number + "SIGNUP", otp)) {
         res.json({
             message: "Invalid token"
         })
         return
     }
 
-    const userId = await client.user.update({
+    const user = await client.user.update({
         where: {
             number
         },
@@ -55,7 +74,7 @@ router.post("/signup/verify", async (req, res) => {
     })
 
     const token = jwt.sign({
-        userId
+        userId: user.id
     }, JWT_PASSWORD)
 
     res.json({
