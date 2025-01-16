@@ -5,7 +5,13 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev:admin": "turbo dev --filter=admin-fe...",
+    "dev:api": "turbo dev --filter=http-backend...",
+    "dev:mobile": "turbo dev --filter=mobile-...",
+    "dev:web": "turbo dev --filter=user-fe...",
+    "db:generate": "cd packages/db && npm run db:generate",
+    "db:docker": "docker run -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
