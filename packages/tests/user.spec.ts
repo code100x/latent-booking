@@ -8,7 +8,7 @@ const NAME_1 = "harkirat";
 
 describe("Signup endpoints", () => {
 
-  it('Double signup doesnt work', async () => {
+  it('Double user signup doesnt work', async () => {
     const response1 = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, {
       number: PHONE_NUMBER_1,
     });
@@ -28,6 +28,26 @@ describe("Signup endpoints", () => {
       });
     }).toThrow();
 
-  })
+    });
+  
+  });
 
-})
+  it('Admin signin works', async () => {
+    const response = await axios.post(`${BACKEND_URL}/api/v1/admin/signin`, {
+      email: "example@gmail.com",
+      password: "password"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.data.token).not.toBeNull();
+
+
+    expect(async () => {
+      await axios.post(`${BACKEND_URL}/api/v1/admin/signin`, {
+        email: "something",
+        password: "password"
+      });
+    }).toThrow();
+
+
+  })

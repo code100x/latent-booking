@@ -18,6 +18,7 @@
     "@types/authenticator": "^1.1.4",
     "@types/express": "^5.0.0",
     "authenticator": "^1.1.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
   }
 }
