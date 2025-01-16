@@ -18,5 +18,11 @@
   },
   "dependencies": {
     "express": "^4.21.2"
-  }
+  },
+  "version": "1.0.0",
+  "description": "This is an official starter Turborepo.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
