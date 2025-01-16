@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b",
+    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "dev": "npm run build && NODE_ENV=dev node dist/index.js"
   },
   "devDependencies": {
-    "@repo/db": "workspace:*",
     "@repo/common": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "esbuild": "0.24.2"
   },
   "keywords": [],
   "author": "",
