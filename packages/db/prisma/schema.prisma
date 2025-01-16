@@ -22,6 +22,10 @@ model User {
   payments  Payment[]
 }
 
+enum AdminType {
+  SuperAdmin
+  Creator
+}
 model Admin {
   id        String    @id      @default(uuid())
   number    String    @unique
@@ -101,7 +105,3 @@ enum PaymentState {
   Pending
 }
 
-enum AdminType {
-  SuperAdmin
-  Creator
-}
