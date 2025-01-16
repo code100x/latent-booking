@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id      @default(uuid())
+  number    String    @unique
+  name      String
+  verified  Boolean   @default(false)
+  bookings  Booking[]
+  payments  Payment[]
+}
+
+model Admin {
+  id        String    @id      @default(uuid())
+  number    String    @unique
+  name      String    @default("")
+  verified  Boolean   @default(false)
+  events    Event[]
+}
+
+model Event {
+  id                String    @id      @default(uuid())
+  name              String
+  desciprtion       String
+  banner            String
+  adminId           String
+  admin             Admin     @relation(fields: [adminId], references: [id])
+  bookings          Booking[]
+  payments          Payment[]
+}
+
+model Booking {
+  id                String    @id      @default(uuid())
+  eventId           String
+  userId            String
+  event             Event     @relation(fields: [eventId], references: [id])
+  user              User      @relation(fields: [userId], references: [id])
+  seats             Seat[]
+}
+
+model Seat {
+  id                String    @id      @default(uuid())
+  seatTypeId        String
+  bookingId         String
+  qr                String
+  seatType          SeatType  @relation(fields: [seatTypeId], references: [id])
+  booking           Booking  @relation(fields: [bookingId], references: [id])
+}
+
+model SeatType {
+  id                String    @id      @default(uuid())
+  name              String
+  description       String
+  event             String
+  price             Int
+  seats             Seat[]
+}
+
+model Payment {
+  id                String    @id      @default(uuid())
+  eventId           String
+  userId            String
+  status            PaymentState
+  user              User @relation(fields: [userId], references: [id])
+  event             Event @relation(fields: [eventId], references: [id])
+}
+
+enum PaymentState {
+  Success
+  Fail
+  Pending
+}

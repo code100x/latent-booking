@@ -8,6 +8,7 @@
     "dev": "npm run build && npm run start"
   },
   "devDependencies": {
+    "@repo/db": "workspace:*",
     "@repo/typescript-config": "workspace:*"
   },
   "keywords": [],
@@ -17,6 +18,7 @@
   "dependencies": {
     "@types/authenticator": "^1.1.4",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "authenticator": "^1.1.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2"
