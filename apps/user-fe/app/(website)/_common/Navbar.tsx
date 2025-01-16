@@ -14,7 +14,7 @@ const Navbar = () => {
 
       <div>
         <ul className=" flex items-center space-x-12 cursor-pointer">
-            {labels.map((item) => <li className={`${selected === item ? " text-[#F8D48D]" : "text-[#A3A3A3]"}  font-medium text-base`} onClick={() => setSelected(item)}>{item}</li> )}
+            {labels.map((item,index) => <li className={`${selected === item ? " text-[#F8D48D]" : "text-[#A3A3A3]"}  font-medium text-base`} onClick={() => setSelected(item)} key={index}>{item}</li> )}
         </ul>
       </div>
 

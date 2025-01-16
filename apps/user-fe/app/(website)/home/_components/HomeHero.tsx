@@ -6,7 +6,7 @@ import Image from "next/image";
 import LatestEpisodes from "./LatestEpisodes";
 import Upgrade from "./Upgrade";
 import DownLoadMobile from "./DownLoadMobile";
-import Footer from "./Footer";
+import Footer from "../../_common/Footer";
 
 const HomeHero = () => {
   const containerRef = useRef(null);
@@ -170,7 +170,6 @@ const HomeHero = () => {
         </div>
       </div>
         <DownLoadMobile/>
-        <Footer/>
     </div>
   );
 };

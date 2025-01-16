@@ -4,15 +4,6 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-<<<<<<< HEAD
-    "start": "set NODE_ENV=production node dist/index.js",
-    "dev": "npm run build && npm run start"
-  },
-  "devDependencies": {
-    "@repo/db": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "cross-env": "^7.0.3"
-=======
     "start": "NODE_ENV=production node dist/index.js",
     "dev": "npm run build && NODE_ENV=dev node dist/index.js"
   },
@@ -20,7 +11,6 @@
     "@repo/db": "workspace:*",
     "@repo/common": "workspace:*",
     "@repo/typescript-config": "workspace:*"
->>>>>>> 2d180ae766bbb0d009595c62110f60597d56c1eb
   },
   "keywords": [],
   "author": "",

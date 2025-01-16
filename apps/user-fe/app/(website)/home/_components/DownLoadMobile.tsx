@@ -32,11 +32,8 @@ const DownLoadMobile = () => {
       });
     };
 
-    // Add event listeners
     mobileElement!.addEventListener("mouseenter", onMouseEnter);
     mobileElement!.addEventListener("mouseleave", onMouseLeave);
-
-    // Cleanup event listeners on component unmount
     return () => {
       mobileElement!.removeEventListener("mouseenter", onMouseEnter);
       mobileElement!.removeEventListener("mouseleave", onMouseLeave);
@@ -44,7 +41,7 @@ const DownLoadMobile = () => {
   }, []);
 
   return (
-    <div className="pt-[90px] pb-[90px]">
+    <div className="pt-[90px]">
       <div className="rounded-[24px] border border-[rgba(248,212,141,0.25)] bg-gradient-to-r from-[#EFE288] via-[#EFE288] to-[#AA823D] bg-[#171717] shadow-[0px_0px_64px_0px_rgba(220,163,57,0.25)] px-12 pt-12 flex items-center overflow-hidden">
         <div className="w-[50%]">
           <Image src={logo} alt="logo" />

@@ -1,12 +1,12 @@
 import React from "react";
 import Image from "next/image";
-import latent from "../../../../public/assests/img/indiagot.png";
-import youtube from "../../../../public/assests/img/youtube.png";
-import twitter from "../../../../public/assests/img/twitter.png";
-import insta from "../../../../public/assests/img/instagram.png";
+import latent from "../../../public/assests/img/indiagot.png";
+import youtube from "../../../public/assests/img/youtube.png";
+import twitter from "../../../public/assests/img/twitter.png";
+import insta from "../../../public/assests/img/instagram.png";
 const Footer = () => {
   return (
-    <div className=" border-2 border-[rgba(248,212,141,0.25)] bg-[#171717] p-16 rounded-[32px] flex items-start justify-between ">
+    <div className="mt-[90px] border-2 border-[rgba(248,212,141,0.25)] bg-[#171717] p-16 rounded-[32px] flex items-start justify-between ">
         <div className="w-[40%]">
             <Image src={latent} alt="latent"/>
             <p className="text-[#A3A3A3] font-manrope text-base my-8">India’s Got Latent humorously celebrates India’s quirkiest hidden talents, blending entertainment, satire, and unconventional performances.</p>

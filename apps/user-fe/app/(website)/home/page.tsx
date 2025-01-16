@@ -1,10 +1,9 @@
 import React from 'react'
-import Navbar from '../_common/Navbar'
 import HomeHero from './_components/HomeHero'
 
 const HomePage = () => {
   return (
-    <div>
+    <div className=''>
        <HomeHero/>
     </div>
   )

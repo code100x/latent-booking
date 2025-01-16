@@ -32,8 +32,8 @@ const Upgrade = () => {
 
         <div>
           <ul className=" space-y-6">
-            {labels.map((data) => (
-              <li className=" flex items-center">
+            {labels.map((data,index) => (
+              <li className=" flex items-center" key={index}>
                 <Image src={certified} alt="certifies" />
                 <p className="text-[#E5E5E5] font-manrope text-2xl">{data}</p>
               </li>
