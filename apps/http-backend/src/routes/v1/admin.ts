@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 import { generateToken, verifyToken } from "authenticator";
-import { Router } from "express";
-import jwt from "jsonwebtoken";
-=======
+import { client } from "@repo/db/client";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { adminMiddleware } from "../../middleware/admin-middleware";
 import { CreateEventSchema, DeleteEventSchema, UpdateEventSchema } from "../../types";
-import { client } from "@repo/db/client";
->>>>>>> recovered-branch
 
 
 const router: Router = Router();
