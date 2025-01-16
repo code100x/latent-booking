@@ -9,14 +9,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.2.1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "6.2.1",
-    "prisma": "^6.2.1"
+    "@prisma/client": "6.2.1"
   }
 }

@@ -4,12 +4,13 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start": "set NODE_ENV=production node dist/index.js",
     "dev": "npm run build && npm run start"
   },
   "devDependencies": {
     "@repo/db": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "cross-env": "^7.0.3"
   },
   "keywords": [],
   "author": "",
