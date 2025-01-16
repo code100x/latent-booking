@@ -33,21 +33,25 @@ describe("Signup endpoints", () => {
   });
 
   it('Admin signin works', async () => {
-    const response = await axios.post(`${BACKEND_URL}/api/v1/admin/signin`, {
-      email: "example@gmail.com",
-      password: "password"
+    const response1 = await axios.post(`${BACKEND_URL}/api/v1/admin/signin`, {
+      phoneNumber: PHONE_NUMBER_1,
     });
 
-    expect(response.status).toBe(200);
-    expect(response.data.token).not.toBeNull();
+    const response2 = await axios.post(`${BACKEND_URL}/api/v1/admin/signin/verify`, {
+      phoneNumber: PHONE_NUMBER_1,
+      otp: "000000"
+    });
 
+    expect(response1.status).toBe(200);
+    expect(response2.status).toBe(200);
+    expect(response1.data.id).not.toBeNull();
 
     expect(async () => {
       await axios.post(`${BACKEND_URL}/api/v1/admin/signin`, {
-        email: "something",
-        password: "password"
+        phoneNumber: PHONE_NUMBER_1,
       });
     }).toThrow();
+
 
 
   })
