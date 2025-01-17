@@ -6472,11 +6472,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-<<<<<<< HEAD
-  yaml@2.7.0: {}
-=======
   xmlbuilder@13.0.2: {}
->>>>>>> 2d180ae766bbb0d009595c62110f60597d56c1eb
 
   yn@3.1.1: {}
 
