@@ -5,7 +5,7 @@ import Otp from "../components/Otp";
 const SignupPage = () => {
   return (
     <div className=" text-white">
-     <Login/>
+     <Otp/>
     </div>
   );
 };

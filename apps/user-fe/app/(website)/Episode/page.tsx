@@ -1,12 +1,8 @@
-import React from 'react'
-import EpisodeMain from './_components/EpisodeMain'
+import React from "react";
+import EpisodeMain from "./_components/EpisodeMain";
 
 const EpisodePage = () => {
-  return (
-    <div>
-      <EpisodeMain/>
-    </div>
-  )
-}
+  return <EpisodeMain />;
+};
 
-export default EpisodePage
+export default EpisodePage;
