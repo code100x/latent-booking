@@ -1,8 +1,11 @@
 import React from 'react'
+import StarMain from './_components/StarMain'
 
 const StartPage = () => {
   return (
-    <div>StartPage</div>
+    <div>
+      <StarMain/>
+    </div>
   )
 }
 
