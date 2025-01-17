@@ -3226,16 +3226,9 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-<<<<<<< HEAD
-  yaml@2.7.0:
-    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
-    engines: {node: '>= 14'}
-    hasBin: true
-=======
   xmlbuilder@13.0.2:
     resolution: {integrity: sha512-Eux0i2QdDYKbdbA6AM6xE4m6ZTZr4G4xF9kahI2ukSEMCzwce2eX9WlTI5J3s+NU7hpasFsr8hWIONae7LluAQ==}
     engines: {node: '>=6.0'}
->>>>>>> 2d180ae766bbb0d009595c62110f60597d56c1eb
 
   yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
@@ -4403,11 +4396,7 @@ snapshots:
 
   dotenv@16.0.3: {}
 
-<<<<<<< HEAD
-  eastasianwidth@0.2.0: {}
-=======
   dotenv@16.4.7: {}
->>>>>>> 2d180ae766bbb0d009595c62110f60597d56c1eb
 
   ecdsa-sig-formatter@1.0.11:
     dependencies:
