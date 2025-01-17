@@ -1,0 +1,15 @@
+{
+  "name": "@repo/tailwind-config",
+  "version": "1.0.0",
+  "main": "tailwind.config.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
+    "tailwindcss-animate": "^1.0.7"
+  }
+}
