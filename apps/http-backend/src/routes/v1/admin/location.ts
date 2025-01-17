@@ -36,7 +36,7 @@ router.post("/", superAdminMiddleware, async (req, res) => {
 
 });
 
-router.get("/locations", adminMiddleware, async (req, res) => {
+router.get("/", adminMiddleware, async (req, res) => {
     const locations = await client.location.findMany();
 
     res.json({

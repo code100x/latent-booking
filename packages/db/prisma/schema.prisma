@@ -22,6 +22,11 @@ model User {
   payments  Payment[]
 }
 
+enum AdminType {
+  SuperAdmin
+  Creator
+}
+
 model Admin {
   id        String    @id      @default(uuid())
   number    String    @unique
@@ -43,18 +48,25 @@ model Event {
   payments          Payment[]
   locationId        String
   startTime         DateTime
+  processed         Int       @default(0)
   published         Boolean   @default(false)
   ended             Boolean   @default(false)
   location          Location  @relation(fields: [locationId], references: [id])
+  timeoutInS        Int       @default(600)
 }
 
 model Booking {
   id                String    @id      @default(uuid())
   eventId           String
   userId            String
+  sequenceNumber    Int
+  paymentId         String?
   event             Event     @relation(fields: [eventId], references: [id])
   user              User      @relation(fields: [userId], references: [id])
   seats             Seat[]
+  status            BookingStatus
+  expiry            DateTime
+  currentSequenceNumber Int
 }
 
 model Seat {
@@ -75,6 +87,7 @@ model SeatType {
   seats             Seat[]
   capacity          Int
   filled            Int     @default(0)
+  locked            Int     @default(0)
   event             Event   @relation(fields: [eventId], references: [id])
 }
 
@@ -101,7 +114,10 @@ enum PaymentState {
   Pending
 }
 
-enum AdminType {
-  SuperAdmin
-  Creator
+enum BookingStatus {
+  Pending
+  PendingPayment
+  Confirmed
+  Timeout
+  Filled
 }

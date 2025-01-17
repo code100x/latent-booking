@@ -8,9 +8,10 @@ import { getEvent } from "../../../controllers/events";
 const router: Router = Router();
 
 router.post("/", adminMiddleware, async (req, res) => {
-    const {data, success} = CreateEventSchema.safeParse(req.body);
+    const {data, success, error} = CreateEventSchema.safeParse(req.body);
     const adminId = req.userId;
 
+    console.log(JSON.stringify(error));
     if (!adminId) {
         res.status(401).json({
             message: "Unauthorized"
@@ -30,8 +31,8 @@ router.post("/", adminMiddleware, async (req, res) => {
             data: {
                 name: data.name,
                 desciprtion: data.description,
-                startTime: data.startTime,
-                locationId: data.location,
+                startTime: new Date(data.startTime),
+                locationId: data.locationId,
                 banner: data.banner,
                 adminId,
                 seatTypes: {
@@ -49,6 +50,7 @@ router.post("/", adminMiddleware, async (req, res) => {
             id: event.id
         })
     } catch(e) {
+        console.log(e)
         res.status(500).json({
             message: "Could not create event"
         })
@@ -119,6 +121,9 @@ router.get("/", adminMiddleware, async (req, res) => {
     const events = await client.event.findMany({
         where: {
             adminId: req.userId
+        },
+        include: {
+            seatTypes: true
         }
     });
 
@@ -197,7 +202,7 @@ router.put("/seats/:eventId", adminMiddleware, async (req, res) => {
         await client.$transaction([
             client.seatType.deleteMany({
                 where: {
-                    eventId: {
+                    id: {
                         "in": deletedSeats.map(x => x.id)
                     }
                 }

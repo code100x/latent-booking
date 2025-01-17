@@ -6,11 +6,13 @@ export const middleware = (...secrets: string[]) => (req: Request, res: Response
         if (req.headers.authorization) {
             const tokenVerified = verifyToken(req, res, secret);
             if (tokenVerified) {
+                console.log("next called")
                 next()
                 return;
             }
         }
     }
+    console.log("401")
     res.status(401).json({
         message: "Unauthorized"
     })
@@ -19,12 +21,16 @@ export const middleware = (...secrets: string[]) => (req: Request, res: Response
 export function verifyToken(req: Request, res: Response, secret: string): boolean {
     const token = req.headers.authorization;
 
+    console.log("token is " + token);
+    console.log("secret is " + secret);
     if (!token) {
         return false
     }
 
     try {
         const decoded = jwt.verify(token, secret);
+        console.log("decoded is ")
+        console.log(decoded)
         if (typeof decoded === "string") {
             return false;
         }
@@ -32,5 +38,6 @@ export function verifyToken(req: Request, res: Response, secret: string): boolea
     } catch(e) {
         return false;
     }
+    console.log("returned true")
     return true;
 }

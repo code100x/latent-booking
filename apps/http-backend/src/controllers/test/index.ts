@@ -15,7 +15,7 @@ export async function creatAdmin(number: string, name: string, type: TAdminType)
     })
 
     const token = jwt.sign({
-        adminId: admin.id
+        userId: admin.id
     }, ADMIN_JWT_PASSWORD);
 
     return token;
