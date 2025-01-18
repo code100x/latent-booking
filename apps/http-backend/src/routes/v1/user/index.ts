@@ -1,17 +1,25 @@
 
 import { Router } from "express";
-import { client } from "@repo/db/client"; 
+import { client } from "@repo/db/client";
 import jwt from "jsonwebtoken";
-import { JWT_PASSWORD } from "../../config";
-import { sendMessage } from "../../utils/twilio";
-import { getToken, verifyToken } from "../../utils/totp";
+import { JWT_PASSWORD } from "../../../config";
+import { sendMessage } from "../../../utils/twilio";
+import { getToken, verifyToken } from "../../../utils/totp";
+import { SignInSchema, SignInVerifySchema, UserSignUpSchema, UserSignUpVerifySchema } from "@repo/common/types";
 
 const router: Router = Router();
 
 router.post("/signup", async (req, res) => {
-    const number = req.body.number;
+
+    const parsedNumber = UserSignUpSchema.safeParse(req.body);
+    if (!parsedNumber.success) {
+        res.status(400).json({
+            message: "Invalid number"
+        })
+        return
+    }
+    const number = parsedNumber.data.number;
     const totp = getToken(number, "AUTH");
-    // send toipt to phone number
 
     const user = await client.user.upsert({
         where: {
@@ -30,11 +38,11 @@ router.post("/signup", async (req, res) => {
         // send otp to user
         try {
             await sendMessage(`Your otp for logging into latent is ${totp}`, number)
-        } catch(e) {
+        } catch (e) {
             res.status(500).json({
                 message: "Could not send otp"
             })
-            return   
+            return
         }
     }
 
@@ -44,9 +52,17 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/signup/verify", async (req, res) => {
-    const number = req.body.number;
-    const name = req.body.name;
-    const otp = req.body.totp;
+    const parsedData = UserSignUpVerifySchema.safeParse(req.body);
+    if (!parsedData.success) {
+        res.status(400).json({
+            message: "Invalid data"
+        })
+        return
+    }
+
+    const number = parsedData.data.number;
+    const otp = parsedData.data.totp;
+    const name = parsedData.data.name
 
     if (process.env.NODE_ENV === "production" && !verifyToken(number, "AUTH", otp)) {
         res.json({
@@ -76,36 +92,39 @@ router.post("/signup/verify", async (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
-    const number = req.body.number;
+    const parsedData = SignInSchema.safeParse(req.body);
+    if (!parsedData.success) {
+        res.status(400).json({
+            message: "Invalid number"
+        })
+        return
+    }
+
+    const number = parsedData.data.number;
     const totp = getToken(number, "AUTH");
     try {
-        console.log(number)
+
         const user = await client.user.findFirstOrThrow({
             where: {
                 number
             }
         });
-        console.log("after nuimebnr" + number);
-    
-        console.log("env is " + process.env.NODE_ENV);
-        // send topt to phone number
+
         if (process.env.NODE_ENV === "production") {
-            console.log("inside send message")
-            // send otp to user
             try {
                 await sendMessage(`Your otp for logging into latent is ${totp}`, number)
-            } catch(e) {
+            } catch (e) {
                 res.status(500).json({
                     message: "Could not send otp"
                 })
-                return   
+                return
             }
         }
 
         res.json({
             message: "Otp sent"
         })
-    } catch(e) {
+    } catch (e) {
         res.status(411).json({
             message: "User invalid"
         })
@@ -113,8 +132,16 @@ router.post("/signin", async (req, res) => {
 });
 
 router.post("/signin/verify", async (req, res) => {
-    const number = req.body.number;    
-    const otp = req.body.totp;
+    const parsedData = SignInVerifySchema.safeParse(req.body);
+    if (!parsedData.success) {
+        res.status(400).json({
+            message: "Invalid data"
+        })
+        return
+    }
+
+    const number = parsedData.data.number;
+    const otp = parsedData.data.totp
 
     if (process.env.NODE_ENV === "production" && !verifyToken(number, "AUTH", otp)) {
         res.json({
@@ -138,6 +165,5 @@ router.post("/signin/verify", async (req, res) => {
     })
 
 });
-
 
 export default router;

@@ -1,12 +1,51 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 72.2% 50.6%;
+    --primary-foreground: 0 85.7% 97.3%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 72.2% 50.6%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 72.2% 50.6%;
+    --primary-foreground: 0 85.7% 97.3%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 72.2% 50.6%;
   }
 }
 
@@ -47,4 +86,33 @@ a {
   .imgDark {
     display: unset;
   }
+}
+/* .star-shape {
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+} */
+.star-shape {
+  clip-path: polygon(
+    47% 0%,
+    /* (94.1959, 6.43755) mapped to 47% width and 0% height */ 61% 29%,
+    /* (131.219, 57.5302) mapped to 61% width and 29% height */ 98% 35%,
+    /* (192.56, 69.3248) mapped to 98% width and 35% height */ 68% 57%,
+    /* (136.176, 61.1318) mapped to 68% width and 57% height */ 79% 80%,
+    /* (153.516, 126.152) mapped to 79% width and 80% height */ 50% 70%,
+    /* (103.163, 162.735) mapped to 50% width and 70% height */ 21% 80%,
+    /* (46.6046, 189.249) mapped to 21% width and 80% height */ 32% 57%,
+    /* (44.7901, 120.325) mapped to 32% width and 57% height */ 2% 35%,
+    /* (3.9902, 80.5546) mapped to 2% width and 35% height */ 39% 29%
+      /* (64.0231, 61.1318) mapped to 39% width and 29% height */
+  );
 }

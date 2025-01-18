@@ -1,0 +1,22 @@
+{
+  "name": "@repo/redis",
+  "version": "1.0.0",
+  "main": "index.js",
+  "exports": {
+    "./client": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/redis": "^4.0.11",
+    "redis": "^4.7.0"
+  }
+}

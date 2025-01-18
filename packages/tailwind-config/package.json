@@ -1,0 +1,17 @@
+{
+  "name": "@repo/tailwind-config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "tailwind.config.ts",
+  "types": "tailwind.config.ts",
+  "dependencies": {
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.33",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.3.3"
+  }
+}

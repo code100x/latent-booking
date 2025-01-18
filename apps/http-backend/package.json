@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@repo/db": "workspace:*",
+    "@repo/common": "workspace:*",
     "@repo/typescript-config": "workspace:*"
   },
   "keywords": [],
@@ -23,6 +24,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "twilio": "^5.4.2"
+    "twilio": "^5.4.2",
+    "@repo/redis": "workspace:*"
   }
 }
