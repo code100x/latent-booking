@@ -43,6 +43,9 @@ const Onboarding: FC = () => {
     if (startLogin) {
       triggerAnimation();
     }
+    return ()=>{
+      animatedImage.value=0;
+    }
   }, [startLogin]);
 
   const validateInput = () => {
