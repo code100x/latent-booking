@@ -27,15 +27,15 @@ const Onboarding: FC = () => {
   const { navigate } = useNavigation<any>();
   const [startLogin, setStartLogin] = useState(false);
   const animatedImage = useSharedValue(0);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [errors, setErrors] = useState<{ phoneNumber?: string } | null>(null);
+  const [input, setInput] = useState('');
+  const [errors, setErrors] = useState<{ input?: string } | null>(null);
 
-  const top = Dimensions.get('window').height
+  const top = Dimensions.get('window').height;
 
   const animatedImageStyle = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(animatedImage.value, [0, 1], [0, 1]), 
-      top:withSpring(interpolate(animatedImage.value, [0, 1], [top, 0]),{damping:8})
+      opacity: interpolate(animatedImage.value, [0, 1], [0, 1]),
+      top: withSpring(interpolate(animatedImage.value, [0, 1], [top, 0]), { damping: 8 }),
     };
   });
 
@@ -43,19 +43,26 @@ const Onboarding: FC = () => {
     if (startLogin) {
       triggerAnimation();
     }
-    return ()=>{
-      animatedImage.value=0;
-    }
+    return () => {
+      animatedImage.value = 0;
+    };
   }, [startLogin]);
 
   const validateInput = () => {
     let tempErrors: any = {};
-    console.log('phone', phoneNumber);
-    if (!phoneNumber.startsWith('0')) {
-      tempErrors.phoneNumber = 'Phone number should start with zero';
+
+    console.log('Input value:', input);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!emailRegex.test(input) && !phoneRegex.test(input)) {
+      tempErrors.input = 'Enter a valid email or phone number';
     }
+
     setErrors(tempErrors);
-    console.log('hello', tempErrors);
+    console.log('Validation Errors:', tempErrors);
+
     return Object.keys(tempErrors).length > 0;
   };
 
@@ -63,7 +70,7 @@ const Onboarding: FC = () => {
     if (validateInput()) {
       return;
     } else {
-      Keyboard.dismiss
+      Keyboard.dismiss;
       navigate('ENTEROTP');
     }
   };
@@ -148,17 +155,15 @@ const Onboarding: FC = () => {
                 <CustomInputTextField
                   label=""
                   placeholder=""
-                  value={phoneNumber}
-                  onChangeText={setPhoneNumber}
-                  keyboardType="numeric"
-                  maxLength={11}
+                  value={input}
+                  onChangeText={setInput}
                   borderColor="transparent"
-                  errorMessage={errors?.phoneNumber}
+                  errorMessage={errors?.input}
                 />
               </View>
               <View style={{ flex: 1 }} />
               <View style={{ justifyContent: 'flex-end', padding: 16 }}>
-                <CustomButton title="Next" loading={phoneNumber?.length < 11} onPress={handleNext} />
+                <CustomButton title="Next" loading={input?.length < 2} onPress={handleNext} />
               </View>
             </Animated.View>
           </TouchableWithoutFeedback>
