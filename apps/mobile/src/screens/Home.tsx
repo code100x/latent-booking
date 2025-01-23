@@ -10,13 +10,15 @@ import {
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DrawerScreenProps } from '@react-navigation/drawer';
-import { DrawerParamList, RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigation/navigator.types';
+import { DrawerParamList } from '../drawer/drawer.types';
 import Header from '../components/Header';
 import HeroImage from '../assets/hero.png';
 import Gradient from '../assets/gradient.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { videos } from '../data';
 import VideoCard from '../components/VideoCard';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 type HomeProps = CompositeScreenProps<
   DrawerScreenProps<DrawerParamList, 'Home'>,
@@ -31,7 +33,7 @@ const Home = ({ navigation }: HomeProps) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View className="px-5">
         <View>
-          <Image source={Gradient} className="absolute -top-8 -left-52" />
+          <Image source={Gradient} className="absolute -top-8 -left-40" />
         </View>
         <Header navigation={navigation} />
         <TouchableOpacity

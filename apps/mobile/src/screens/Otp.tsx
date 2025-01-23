@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,46 +5,22 @@ import {
   Image,
   TextInput,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
 } from 'react-native';
 import Gradient from '../assets/gradient.png';
 import OtpImage from '../assets/otp.png';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { RootStackParamList } from '../navigation/navigator.types';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 type OtpProps = NativeStackScreenProps<RootStackParamList, 'Otp'>;
 
 const Otp = ({ navigation }: OtpProps) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setIsKeyboardOpen(true);
-      },
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setIsKeyboardOpen(false);
-      },
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+  const isKeyboardOpen = useKeyboardStatus();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
+    <KeyboardAwareScrollView>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -56,10 +31,10 @@ const Otp = ({ navigation }: OtpProps) => {
             onPress={() => navigation.goBack()}
             className="absolute top-10 left-5 z-10"
           >
-            <Icon name="arrow-back" size={24} color="#FFF" />
+            <IonIcon name="arrow-back" size={24} color="#FFF" />
           </TouchableOpacity>
           <View>
-            <Image source={Gradient} className="absolute -top-8 -left-52" />
+            <Image source={Gradient} className="absolute -top-8 -left-40" />
           </View>
           <View
             className={`w-full ${isKeyboardOpen ? '-mt-12 -mb-16' : 'mt-20'}`}
@@ -97,7 +72,7 @@ const Otp = ({ navigation }: OtpProps) => {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

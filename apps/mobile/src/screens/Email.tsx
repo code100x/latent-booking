@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,52 +5,28 @@ import {
   Image,
   TextInput,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
 } from 'react-native';
 import Gradient from '../assets/gradient.png';
 import EmailImage from '../assets/email.png';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigation/navigator.types';
+import { useKeyboardStatus } from '../hooks/useKeyboardStatus';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 type EmailProps = NativeStackScreenProps<RootStackParamList, 'Email'>;
 
 const Email = ({ navigation }: EmailProps) => {
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setIsKeyboardOpen(true);
-      },
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setIsKeyboardOpen(false);
-      },
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+  const isKeyboardOpen = useKeyboardStatus();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
+    <KeyboardAwareScrollView>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
       >
         <View className="pb-8">
           <View>
-            <Image source={Gradient} className="absolute -top-8 -left-52" />
+            <Image source={Gradient} className="absolute -top-8 -left-40" />
           </View>
           <View
             className={`w-full ${isKeyboardOpen ? '-mt-12 -mb-16' : 'mt-20'}`}
@@ -87,7 +62,7 @@ const Email = ({ navigation }: EmailProps) => {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

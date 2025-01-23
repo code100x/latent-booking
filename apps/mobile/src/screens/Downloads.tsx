@@ -3,8 +3,8 @@ import { Image, ScrollView, TouchableOpacity } from 'react-native';
 import { View, Text } from 'react-native';
 import Gradient from '../assets/gradient.png';
 import { DrawerScreenProps } from '@react-navigation/drawer';
-import { DrawerParamList } from '../App';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { DrawerParamList } from '../drawer/drawer.types';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import Thumbnail from '../assets/thumbnail.png';
 
 type DownloadsProps = DrawerScreenProps<DrawerParamList, 'Downloads'>;
@@ -14,14 +14,14 @@ const Downloads = ({ navigation }: DownloadsProps) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View className="pb-8 px-5">
         <View>
-          <Image source={Gradient} className="absolute -top-8 left-0" />
+          <Image source={Gradient} className="absolute -top-8 -left-40" />
         </View>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => navigation.goBack()}
           className="absolute top-10 left-5 z-10"
         >
-          <Icon name="arrow-back" size={24} color="#FFF" />
+          <IonIcon name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
         <View className="pt-10">
           <Text className="text-[#D4D4D4] font-medium text-sm ml-2 text-center">
@@ -44,7 +44,7 @@ const Downloads = ({ navigation }: DownloadsProps) => {
               </Text>
             </View>
             <TouchableOpacity activeOpacity={0.7}>
-              <Icon name="trash-bin" size={16} color="#FAFAFA" />
+              <IonIcon name="trash-bin" size={16} color="#FAFAFA" />
             </TouchableOpacity>
           </View>
         </View>

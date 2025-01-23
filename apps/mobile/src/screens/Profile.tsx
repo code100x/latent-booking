@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import Gradient from '../assets/gradient.png';
 import { DrawerScreenProps } from '@react-navigation/drawer';
-import { DrawerParamList } from '../App';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { DrawerParamList } from '../drawer/drawer.types';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 type ProfileProps = DrawerScreenProps<DrawerParamList, 'Profile'>;
@@ -20,14 +20,14 @@ const Profile = ({ navigation }: ProfileProps) => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View className="h-full pb-8">
         <View>
-          <Image source={Gradient} className="absolute -top-8 -left-52" />
+          <Image source={Gradient} className="absolute -top-8 -left-40" />
         </View>
         <View className="flex flex-row items-center justify-between px-6 pt-10">
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => navigation.goBack()}
           >
-            <Icon name="arrow-back" size={24} color="#FFF" />
+            <IonIcon name="arrow-back" size={24} color="#FFF" />
           </TouchableOpacity>
           <View className="flex flex-row items-center">
             <FontAwesomeIcon name="pencil" size={12} color="#D4D4D4" />

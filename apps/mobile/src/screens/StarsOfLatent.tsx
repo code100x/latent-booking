@@ -3,8 +3,8 @@ import { Image, ScrollView, TouchableOpacity } from 'react-native';
 import { View, Text } from 'react-native';
 import Gradient from '../assets/gradient.png';
 import { DrawerScreenProps } from '@react-navigation/drawer';
-import { DrawerParamList } from '../App';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { DrawerParamList } from '../drawer/drawer.types';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import Star1 from '../assets/star1.png';
 import Star2 from '../assets/star2.png';
 import Star3 from '../assets/star3.png';
@@ -21,10 +21,10 @@ const StarsOfLatent = ({ navigation }: StarsOfLatentProps) => {
           onPress={() => navigation.goBack()}
           className="absolute top-10 left-5 z-10"
         >
-          <Icon name="arrow-back" size={24} color="#FFF" />
+          <IonIcon name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
         <View>
-          <Image source={Gradient} className="absolute -top-8 -left-52" />
+          <Image source={Gradient} className="absolute -top-8 -left-40" />
         </View>
         <View className="mt-24">
           <Text className="text-[#FFFFFF] font-medium text-2xl">

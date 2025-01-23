@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigation/navigator.types';
 import LinearGradient from 'react-native-linear-gradient';
 import WelcomeImage from '../assets/welcome.png';
 import Gradient from '../assets/gradient.png';
@@ -12,7 +12,7 @@ const Welcome = ({ navigation }: WelcomeProps) => {
   return (
     <View className="h-full px-6 pb-8">
       <View>
-        <Image source={Gradient} className="absolute -top-8 -left-52" />
+        <Image source={Gradient} className="absolute -top-8 -left-40" />
       </View>
       <View className="w-full mx-auto mt-20">
         <Image source={WelcomeImage} className="mx-auto w-80 h-80" />

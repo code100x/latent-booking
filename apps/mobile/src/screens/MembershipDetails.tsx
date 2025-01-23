@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigation/navigator.types';
 import Gradient from '../assets/gradient.png';
 import BronzeIcon from '../assets/bronze.png';
 import GoldIcon from '../assets/gold.png';
 import YoutubeIcon from '../assets/youtube.png';
+import SubscriptionCard from '../components/SubscriptionCard';
 
 type MembershipDetailsProps = NativeStackScreenProps<
   RootStackParamList,
@@ -24,10 +23,10 @@ const MembershipDetails = ({ navigation }: MembershipDetailsProps) => {
           onPress={() => navigation.goBack()}
           className="absolute top-10 left-5 z-10"
         >
-          <Icon name="arrow-back" size={24} color="#FFF" />
+          <IonIcon name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
         <View>
-          <Image source={Gradient} className="absolute -top-8 -left-52" />
+          <Image source={Gradient} className="absolute -top-8 -left-40" />
         </View>
         <View className="px-6 mt-24">
           <Text className="text-[#FFF] text-2xl font-medium">
@@ -54,104 +53,35 @@ const MembershipDetails = ({ navigation }: MembershipDetailsProps) => {
               Exclusive Give-Aways
             </Text>
           </View>
-          <View className="mt-7 space-y-4">
-            <LinearGradient
-              colors={['rgba(4, 143, 249, 0.8)', 'rgba(8, 121, 207, 0.8)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="rounded-md border border-[#BDDBFB33]"
-            >
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {}}
-                className="flex flex-row items-start p-[14px]"
-              >
-                <Image source={BronzeIcon} className="w-12 h-12 mr-2" />
-                <View className="flex flex-1 flex-row items-center justify-between">
-                  <View>
-                    <Text className="text-[#F4F4F3] text-base font-bold mb-[6px]">
-                      Latent+ Monthly
-                    </Text>
-                    <Text className="text-[#FFFFFFB2] font-medium text-xs">
-                      One month subscription
-                    </Text>
-                    <View className="flex flex-row space-x-2 mt-4">
-                      <Text className="text-[#F4F4F3] font-semibold text-lg opacity-50">
-                        ₹59
-                      </Text>
-                      <Text className="text-[#F4F4F3] font-semibold text-lg">
-                        ₹49
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <MaterialIcon name="chevron-right" size={24} color="#FFF" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </LinearGradient>
-            <LinearGradient
-              colors={['#DCB856', '#E3A400']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="rounded-md border border-[#C6A95C]"
-            >
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {}}
-                className="flex flex-row items-start p-[14px]"
-              >
-                <Image source={GoldIcon} className="w-12 h-12 mr-2" />
-                <View className="flex flex-1 flex-row items-center justify-between">
-                  <View>
-                    <Text className="text-[#F4F4F3] text-base font-bold mb-[6px]">
-                      Latent+ Yearly
-                    </Text>
-                    <Text className="text-[#FFFFFFB2] font-medium text-xs">
-                      One year subscription
-                    </Text>
-                    <View className="flex flex-row space-x-2 mt-4">
-                      <Text className="text-[#F4F4F3] font-semibold text-lg opacity-50">
-                        ₹499
-                      </Text>
-                      <Text className="text-[#F4F4F3] font-semibold text-lg">
-                        ₹399
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <MaterialIcon name="chevron-right" size={24} color="#FFF" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </LinearGradient>
-            <LinearGradient
-              colors={['#EB0809', '#AD0E12']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="rounded-md border border-[#FFFFFF80]"
-            >
-              <TouchableOpacity
-                activeOpacity={0.8}
-                className="flex flex-row items-start p-[14px]"
-              >
-                <Image source={YoutubeIcon} className="w-12 h-12 mr-2" />
-                <View className="flex flex-1 flex-row items-center justify-between">
-                  <View>
-                    <Text className="text-[#F4F4F3] text-base font-bold mb-[6px]">
-                      Already a YouTube Member?
-                    </Text>
-                    <Text className="text-[#FFFFFFB2] font-medium text-xs">
-                      Connect your YouTube account and {'\n'}get Latent+
-                      membership on the app
-                    </Text>
-                  </View>
-                  <View>
-                    <MaterialIcon name="chevron-right" size={24} color="#FFF" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </LinearGradient>
+          <View className="mt-7">
+            <SubscriptionCard
+              color1="rgba(4, 143, 249, 0.8)"
+              color2="rgba(8, 121, 207, 0.8)"
+              borderColor="#BDDBFB33"
+              icon={BronzeIcon}
+              title="Latent+ Monthly"
+              description="One month subscription"
+              originalPrice={59}
+              discountedPrice={49}
+            />
+            <SubscriptionCard
+              color1="#DCB856"
+              color2="#E3A400"
+              borderColor="#C6A95C"
+              icon={GoldIcon}
+              title="Latent+ Yearly"
+              description="One year subscription"
+              originalPrice={499}
+              discountedPrice={399}
+            />
+            <SubscriptionCard
+              color1="#EB0809"
+              color2="#AD0E12"
+              borderColor="#FFFFFF80"
+              icon={YoutubeIcon}
+              title="Already a YouTube Member?"
+              description="Connect your YouTube account and get Latent+ membership on the app"
+            />
           </View>
         </View>
       </View>
