@@ -3,8 +3,10 @@ use log::{info, error};
 
 mod config;
 mod user;
+mod admin;
 
 pub use user::User;
+pub use admin::Admin;
 
 pub struct Db {
     client: PgPool,
