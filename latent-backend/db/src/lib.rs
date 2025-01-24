@@ -6,11 +6,13 @@ mod user;
 mod admin;
 mod event;
 mod location;
+mod booking;
 
 pub use user::User;
 pub use admin::{Admin, SuperAdmin};
 pub use event::{Event, SeatType};
 pub use location::Location;
+pub use booking::{Booking, BookedSeat, Payment};
 
 pub struct Db {
     client: PgPool,
