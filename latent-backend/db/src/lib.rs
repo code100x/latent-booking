@@ -4,9 +4,11 @@ use log::{info, error};
 mod config;
 mod user;
 mod admin;
+mod event;
 
 pub use user::User;
 pub use admin::Admin;
+pub use event::{Event, SeatType};
 
 pub struct Db {
     client: PgPool,
