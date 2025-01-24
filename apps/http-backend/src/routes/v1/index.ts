@@ -11,7 +11,6 @@ import superAdminRouter from "./superadmin";
 const router: Router = Router();
 
 router.use("/user/bookings", bookingsRouter);
-router.use("/razorpay", razorpayRouter);
 router.use("/user/transaction", transactionRouter);
 router.use("/user", userRouter);
 router.use("/admin/event", adminEventRouter);

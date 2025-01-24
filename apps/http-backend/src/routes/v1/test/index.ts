@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { creatAdmin } from "../../../controllers/test";
-import { AdminType, client } from "@repo/db/client";
+import { creatAdmin, AdminType } from "../../../controllers/test";
+import { client } from "@repo/db/client";
 import { JWT_PASSWORD } from "../../../config";
 import jwt from "jsonwebtoken";
 
