@@ -8,7 +8,7 @@ mod event;
 mod location;
 
 pub use user::User;
-pub use admin::Admin;
+pub use admin::{Admin, SuperAdmin};
 pub use event::{Event, SeatType};
 pub use location::Location;
 
