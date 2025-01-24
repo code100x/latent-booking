@@ -5,10 +5,12 @@ mod config;
 mod user;
 mod admin;
 mod event;
+mod location;
 
 pub use user::User;
 pub use admin::Admin;
 pub use event::{Event, SeatType};
+pub use location::Location;
 
 pub struct Db {
     client: PgPool,
