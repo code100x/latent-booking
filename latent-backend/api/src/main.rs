@@ -6,6 +6,7 @@ use poem::{
 use poem_openapi::OpenApiService;
 use std::sync::Arc;
 
+mod api;
 mod error;
 mod routes;
 mod utils;
