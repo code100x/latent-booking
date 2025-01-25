@@ -1,9 +1,4 @@
-use poem::{
-    handler,
-    middleware::{Middleware, Next},
-    web::Data,
-    Endpoint, Request, Result,
-};
+use poem::{Endpoint, EndpointExt, Middleware, Request, Result};
 
 pub struct AdminMiddleware;
 
@@ -19,17 +14,19 @@ pub struct AdminMiddlewareImpl<E> {
     ep: E,
 }
 
-#[handler]
-impl<E: Endpoint> AdminMiddlewareImpl<E> {
-    async fn call(&self, req: Request, next: Next<E>) -> Result {
+impl<E: poem::Endpoint> poem::Endpoint for AdminMiddlewareImpl<E> {
+    type Output = E::Output;
+
+    async fn call(&self, req: Request) -> Result<Self::Output> {
         println!("AdminMiddleware hit!");
-        next.run(req).await
+        self.ep.call(req).await
     }
 }
 
+// Define a simple middleware for POST
 pub struct SuperAdminMiddleware;
 
-impl<E: Endpoint> Middleware<E> for SuperAdminMiddleware {
+impl<E: poem::Endpoint> Middleware<E> for SuperAdminMiddleware {
     type Output = SuperAdminMiddlewareImpl<E>;
 
     fn transform(&self, ep: E) -> Self::Output {
@@ -41,10 +38,19 @@ pub struct SuperAdminMiddlewareImpl<E> {
     ep: E,
 }
 
-#[handler]
-impl<E: Endpoint> SuperAdminMiddlewareImpl<E> {
-    async fn call(&self, req: Request, next: Next<E>) -> Result {
+impl<E: poem::Endpoint> poem::Endpoint for SuperAdminMiddlewareImpl<E> {
+    type Output = E::Output;
+
+    async fn call(&self, req: Request) -> Result<Self::Output> {
         println!("SuperAdminMiddleware hit!");
-        next.run(req).await
+        self.ep.call(req).await
     }
+}
+
+pub fn admin_middleware(ep: impl poem::Endpoint) -> impl poem::Endpoint {
+    ep.with(AdminMiddleware)
+}
+
+pub fn superadmin_middleware(ep: impl poem::Endpoint) -> impl poem::Endpoint {
+    ep.with(SuperAdminMiddleware)
 }

@@ -1,8 +1,10 @@
 use crate::{
     error::AppError,
     utils::{totp, twilio},
+    middleware::admin::{admin_middleware, superadmin_middleware},
     AppState,
 };
+
 use poem::web::{Data, Json};
 use poem_openapi::{payload, Object, OpenApi};
 use serde::{Deserialize, Serialize};
@@ -27,6 +29,34 @@ struct SignInVerify {
     number: String,
     totp: String,
 }
+
+
+#[derive(Debug, Serialize, Deserialize, Object)]
+struct Location {
+    id: String,
+    name: String,
+    description: String,
+    image_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Object)]
+pub struct LocationResponse {
+    locations: Vec<Location>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Object)]
+pub struct CreateLocation {
+    name: String,
+    description: String,
+    image_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Object)]
+pub struct CreateLocationResponse {
+    message: String,
+    id: String,
+}
+
 
 pub struct AdminApi;
 
@@ -99,19 +129,37 @@ impl AdminApi {
         Ok(payload::Json(VerifyAdminResponse { token }))
     }
 
-    #[oai(path = "/location", method = "get")]
-    pub async fn get_location(&self) -> poem::Result<payload::Json<serde_json::Value>> {
-        println!("GET /api/v1/admin/location handler hit!");
-        Ok(payload::Json(
-            serde_json::json!({ "message": "GET /admin/location" }),
-        ))
+    #[oai(path = "/location", method = "get", transform = "admin_middleware")]
+    pub async fn get_location(
+        &self,
+        state: Data<&AppState>,
+    ) -> poem::Result<payload::Json<LocationResponse>, AppError> {
+
+        let db_locations = state.db.get_location().await?;
+
+        let locations = db_locations.iter().map(|l| Location {
+            id: l.id.to_string(),
+            name: l.name.clone(),
+            description: l.description.clone(),
+            image_url: l.image_url.clone(),
+        }).collect();
+
+        Ok(payload::Json(LocationResponse { locations }))
     }
 
-    #[oai(path = "/location", method = "post")]
-    pub async fn create_location(&self) -> poem::Result<payload::Json<serde_json::Value>> {
-        println!("POST /api/v1/admin/location handler hit!");
-        Ok(payload::Json(
-            serde_json::json!({ "message": "POST /admin/location" }),
-        ))
+    #[oai(path = "/location", method = "post", transform = "superadmin_middleware")]
+    pub async fn create_location(
+        &self,
+        body: Json<CreateLocation>,
+        state: Data<&AppState>,
+    ) -> poem::Result<payload::Json<CreateLocationResponse>, AppError> {
+        let CreateLocation { name, description, image_url } = body.0;
+
+        let location = state.db.create_location(name, description, image_url).await?;
+
+        Ok(payload::Json(CreateLocationResponse {
+            message: "Location created successfully".to_string(),
+            id: location.id.to_string(),
+        }))
     }
 }

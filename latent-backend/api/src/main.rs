@@ -1,4 +1,7 @@
-use poem::{get, listener::TcpListener, middleware::Cors, EndpointExt, Route, Server};
+use poem::{
+    listener::TcpListener, middleware::Cors, EndpointExt, Result,
+    Route, Server,
+};
 use poem_openapi::OpenApiService;
 use std::sync::Arc;
 
@@ -59,18 +62,7 @@ async fn main() -> Result<(), std::io::Error> {
         println!("Test routes enabled (development mode)");
     }
 
-    let app = app
-        .at("/api/v1/admin/location", |route| {
-            route
-                .get()
-                .with(middleware::admin::AdminMiddleware) // AdminMiddleware for GET
-                .to(routes::admin::AdminApi::get_location)
-                .post()
-                .with(middleware::admin::SuperAdminMiddleware) // SuperAdminMiddleware for POST
-                .to(routes::admin::AdminApi::create_location)
-        })
-        .with(Cors::new())
-        .data(AppState { db });
+    let app = app.with(Cors::new()).data(AppState { db });
 
     println!("Server running at {}", server_url);
     println!("API docs at {}/docs", server_url);
