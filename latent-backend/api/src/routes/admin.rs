@@ -98,4 +98,20 @@ impl AdminApi {
 
         Ok(payload::Json(VerifyAdminResponse { token }))
     }
+
+    #[oai(path = "/location", method = "get")]
+    pub async fn get_location(&self) -> poem::Result<payload::Json<serde_json::Value>> {
+        println!("GET /api/v1/admin/location handler hit!");
+        Ok(payload::Json(
+            serde_json::json!({ "message": "GET /admin/location" }),
+        ))
+    }
+
+    #[oai(path = "/location", method = "post")]
+    pub async fn create_location(&self) -> poem::Result<payload::Json<serde_json::Value>> {
+        println!("POST /api/v1/admin/location handler hit!");
+        Ok(payload::Json(
+            serde_json::json!({ "message": "POST /admin/location" }),
+        ))
+    }
 }
