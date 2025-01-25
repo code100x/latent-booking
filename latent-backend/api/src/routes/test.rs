@@ -1,4 +1,4 @@
-use crate::{error::AppError, AppState};
+use crate::{error::AppError, utils::{config, jwt::create_jwt}, AppState};
 use db::AdminType;
 use poem::web::{Data, Json};
 use poem_openapi::{payload, Object, OpenApi};
@@ -13,7 +13,7 @@ struct CreateTestUser {
 #[derive(Debug, Deserialize, Serialize, Object)]
 struct CreateTestUserResponse {
     message: String,
-    id: String,
+    token: String,
 }
 
 pub struct TestApi;
@@ -34,9 +34,13 @@ impl TestApi {
             .create_test_admin(number.clone(), name, AdminType::Creator)
             .await?;
 
+
+        let user_id = user.id.to_string();
+        let jwt_token = create_jwt(user_id, 3600, &config::admin_jwt_password())?;
+
         Ok(payload::Json(CreateTestUserResponse {
             message: "Test Admin created successfully".to_string(),
-            id: user.id.to_string(),
+            token: jwt_token,
         }))
     }
 
@@ -54,9 +58,12 @@ impl TestApi {
             .create_test_admin(number.clone(), name, AdminType::SuperAdmin)
             .await?;
 
+        let user_id = user.id.to_string();
+        let jwt_token = create_jwt(user_id, 3600, &config::superadmin_jwt_password())?;
+
         Ok(payload::Json(CreateTestUserResponse {
             message: "Test Super Admin created successfully".to_string(),
-            id: user.id.to_string(),
+            token: jwt_token,
         }))
     }
 
@@ -71,9 +78,12 @@ impl TestApi {
         let name = body.0.name;
         let user = state.db.create_test_user(number.clone(), name).await?;
 
+        let user_id = user.id.to_string();
+        let jwt_token = create_jwt(user_id, 3600, &config::jwt_password())?;
+
         Ok(payload::Json(CreateTestUserResponse {
             message: "Test User created successfully".to_string(),
-            id: user.id.to_string(),
+            token: jwt_token,
         }))
     }
 }

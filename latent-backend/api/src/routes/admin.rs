@@ -1,7 +1,7 @@
 use crate::{
     error::AppError,
     middleware::admin::{admin_middleware, superadmin_middleware},
-    utils::{config, totp, twilio},
+    utils::{config, jwt::create_jwt, totp, twilio},
     AppState,
 };
 
@@ -132,29 +132,7 @@ impl AdminApi {
 
         let user_id = state.db.verify_admin_signin(number).await?;
 
-        let current_time = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map_err(|_| {
-                poem::Error::from_string(
-                    "Failed to get current time".to_string(),
-                    poem::http::StatusCode::INTERNAL_SERVER_ERROR,
-                )
-            })?
-            .as_secs() as usize;
-
-        // Set expiration time to 1 hour from now
-        let exp = current_time + 3600;
-
-        let claims = Claims {
-            sub: user_id.clone(),
-            exp,
-        };
-
-        let jwt_token = encode(
-            &Header::default(),
-            &claims,
-            &EncodingKey::from_secret(config::admin_jwt_password().as_bytes()),
-        )?;
+        let jwt_token = create_jwt(user_id, 3600, &config::admin_jwt_password())?;
 
         Ok(payload::Json(VerifyAdminResponse { token: jwt_token }))
     }
