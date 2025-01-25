@@ -1,5 +1,6 @@
 use std::env;
 
+#[allow(dead_code)]
 pub fn jwt_password() -> String {
     env::var("JWT_PASSWORD").unwrap_or_else(|_| "123random".to_string())
 }

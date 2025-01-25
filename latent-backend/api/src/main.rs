@@ -38,7 +38,8 @@ async fn main() -> Result<(), std::io::Error> {
 
     // Create API service
     let api_service =
-        OpenApiService::new(routes::user::UserApi, "Latent Booking", "1.0").server(&server_url);
+        OpenApiService::new(routes::user::UserApi, "Latent Booking", "1.0")
+        .server(format!("{}/user", server_url));
 
     let admin_api_service =
         OpenApiService::new(routes::admin::AdminApi, "Admin Latent Booking", "1.0")
@@ -49,7 +50,7 @@ async fn main() -> Result<(), std::io::Error> {
 
     // Create route with CORS
     let mut app = Route::new()
-        .nest("/api/v1", api_service)
+        .nest("/api/v1/user", api_service)
         .nest("/api/v1/admin", admin_api_service)
         .nest("/docs", ui);
 
