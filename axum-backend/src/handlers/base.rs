@@ -4,7 +4,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 pub async fn healthcheck() -> Json<Value> {
     Json(json!({
-        "status": "200",
+        "status": "Application is up and running",
         "timestamp": SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap_or_default()
