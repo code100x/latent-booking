@@ -30,6 +30,10 @@ pub enum AppError {
     /// Bad request (400)
     #[oai(status = 400)]
     BadRequest(Json<ErrorBody>),
+
+    /// Admin Not Found (411)
+    #[oai(status = 411)]
+    AdminNotFound(Json<ErrorBody>),
 }
 
 impl From<sqlx::Error> for AppError {

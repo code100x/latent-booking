@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, Api, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState, utils::{totp, twilio}};
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct CreateUser {
@@ -42,8 +42,10 @@ struct SignInVerify {
     totp: String,
 }
 
+pub struct UserApi;
+
 #[OpenApi]
-impl Api {
+impl UserApi {
     /// Create a new user
     #[oai(path = "/signup", method = "post")]
     async fn create_user(&self, body: Json<CreateUser>, state: Data<&AppState>) -> poem::Result<payload::Json<CreateUserResponse>, AppError> {

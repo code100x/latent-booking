@@ -3,8 +3,13 @@ use log::{info, error};
 
 mod config;
 mod user;
+mod admin;
+
+#[cfg(debug_assertions)]
+pub mod test;
 
 pub use user::User;
+pub use admin::AdminType;
 
 pub struct Db {
     client: PgPool,
