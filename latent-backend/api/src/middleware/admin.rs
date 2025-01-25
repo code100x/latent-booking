@@ -1,56 +1,85 @@
+use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use poem::{Endpoint, EndpointExt, Middleware, Request, Result};
+use poem_openapi::payload;
+use serde::{Deserialize, Serialize};
 
-pub struct AdminMiddleware;
+use crate::{
+    error::AppError,
+    utils::config::{admin_jwt_password, superadmin_jwt_password},
+};
 
-impl<E: Endpoint> Middleware<E> for AdminMiddleware {
-    type Output = AdminMiddlewareImpl<E>;
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String, // Subject (e.g., user ID)
+    exp: usize,  // Expiration time
+}
+
+pub struct JwtMiddleware {
+    secret: String, // Secret key for JWT verification
+}
+
+impl JwtMiddleware {
+    /// Create a new instance of `JwtMiddleware` with the given secret key
+    pub fn new(secret: String) -> Self {
+        Self { secret }
+    }
+}
+impl<E: Endpoint> Middleware<E> for JwtMiddleware {
+    type Output = JwtMiddlewareImpl<E>;
 
     fn transform(&self, ep: E) -> Self::Output {
-        AdminMiddlewareImpl { ep }
+        JwtMiddlewareImpl {
+            ep,
+            secret: self.secret.clone(),
+        }
     }
 }
 
-pub struct AdminMiddlewareImpl<E> {
+pub struct JwtMiddlewareImpl<E> {
     ep: E,
+    secret: String,
 }
 
-impl<E: poem::Endpoint> poem::Endpoint for AdminMiddlewareImpl<E> {
+impl<E: poem::Endpoint> poem::Endpoint for JwtMiddlewareImpl<E> {
     type Output = E::Output;
 
-    async fn call(&self, req: Request) -> Result<Self::Output> {
-        println!("AdminMiddleware hit!");
-        self.ep.call(req).await
+    async fn call(&self, mut req: Request) -> Result<Self::Output, poem::Error> {
+        let token = req
+            .headers()
+            .get("Authorization")
+            .and_then(|value| value.to_str().ok());
+
+        if let Some(token) = token {
+            let decoding_key = DecodingKey::from_secret(self.secret.as_bytes());
+            let validation = Validation::new(Algorithm::HS256);
+
+            match decode::<Claims>(token, &decoding_key, &validation) {
+                Ok(token_data) => {
+                    req.extensions_mut().insert(token_data.claims.sub);
+                    self.ep.call(req).await
+                }
+                Err(_) => Err(
+                    AppError::Unauthorized(payload::Json(crate::error::ErrorBody {
+                        message: "Unauthorized".to_string(),
+                    }))
+                    .into(),
+                ),
+            }
+        } else {
+            Err(
+                AppError::Unauthorized(payload::Json(crate::error::ErrorBody {
+                    message: "Unauthorized".to_string(),
+                }))
+                .into(),
+            )
+        }
     }
 }
 
-// Define a simple middleware for POST
-pub struct SuperAdminMiddleware;
-
-impl<E: poem::Endpoint> Middleware<E> for SuperAdminMiddleware {
-    type Output = SuperAdminMiddlewareImpl<E>;
-
-    fn transform(&self, ep: E) -> Self::Output {
-        SuperAdminMiddlewareImpl { ep }
-    }
+pub fn admin_middleware(ep: impl Endpoint) -> impl Endpoint {
+    ep.with(JwtMiddleware::new(admin_jwt_password()))
 }
 
-pub struct SuperAdminMiddlewareImpl<E> {
-    ep: E,
-}
-
-impl<E: poem::Endpoint> poem::Endpoint for SuperAdminMiddlewareImpl<E> {
-    type Output = E::Output;
-
-    async fn call(&self, req: Request) -> Result<Self::Output> {
-        println!("SuperAdminMiddleware hit!");
-        self.ep.call(req).await
-    }
-}
-
-pub fn admin_middleware(ep: impl poem::Endpoint) -> impl poem::Endpoint {
-    ep.with(AdminMiddleware)
-}
-
-pub fn superadmin_middleware(ep: impl poem::Endpoint) -> impl poem::Endpoint {
-    ep.with(SuperAdminMiddleware)
+pub fn superadmin_middleware(ep: impl Endpoint) -> impl Endpoint {
+    ep.with(JwtMiddleware::new(superadmin_jwt_password()))
 }

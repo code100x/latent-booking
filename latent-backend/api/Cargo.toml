@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 db = { path = "../db" }
 dotenv = "0.15.0"
+jsonwebtoken = "9.3.0"
 poem = "3.1.3"
 poem-openapi = { version = "5.1.2", features = ["swagger-ui"] }
 serde = "1.0.217"

@@ -1,4 +1,6 @@
 use poem_openapi::{payload::Json, ApiResponse, Object};
+use poem::error::Error as PoemError;
+use jsonwebtoken::errors::Error as JwtError;
 
 #[derive(Debug, Object)]
 pub struct ErrorBody {
@@ -46,5 +48,21 @@ impl From<sqlx::Error> for AppError {
                 message: "Database error occurred".to_string(),
             })),
         }
+    }
+}
+
+impl From<PoemError> for AppError {
+    fn from(err: PoemError) -> Self {
+        AppError::InternalServerError(Json(ErrorBody {
+            message: err.to_string(),
+        }))
+    }
+}
+
+impl From<JwtError> for AppError {
+    fn from(err: JwtError) -> Self {
+        AppError::InternalServerError(Json(ErrorBody {
+            message: format!("JWT error: {}", err),
+        }))
     }
 }

@@ -1,13 +1,21 @@
 use crate::{
     error::AppError,
-    utils::{totp, twilio},
     middleware::admin::{admin_middleware, superadmin_middleware},
+    utils::{config, totp, twilio},
     AppState,
 };
 
+use jsonwebtoken::{encode, EncodingKey, Header};
 use poem::web::{Data, Json};
 use poem_openapi::{payload, Object, OpenApi};
 use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims {
+    sub: String, // Subject (e.g., user ID)
+    exp: usize,  // Expiration time
+}
 
 #[derive(Debug, Deserialize, Serialize, Object)]
 struct VerifyAdminResponse {
@@ -29,7 +37,6 @@ struct SignInVerify {
     number: String,
     totp: String,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct Location {
@@ -56,7 +63,6 @@ pub struct CreateLocationResponse {
     message: String,
     id: String,
 }
-
 
 pub struct AdminApi;
 
@@ -124,9 +130,33 @@ impl AdminApi {
             )));
         }
 
-        let token = state.db.verify_admin_signin(number).await?;
+        let user_id = state.db.verify_admin_signin(number).await?;
 
-        Ok(payload::Json(VerifyAdminResponse { token }))
+        let current_time = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|_| {
+                poem::Error::from_string(
+                    "Failed to get current time".to_string(),
+                    poem::http::StatusCode::INTERNAL_SERVER_ERROR,
+                )
+            })?
+            .as_secs() as usize;
+
+        // Set expiration time to 1 hour from now
+        let exp = current_time + 3600;
+
+        let claims = Claims {
+            sub: user_id.clone(),
+            exp,
+        };
+
+        let jwt_token = encode(
+            &Header::default(),
+            &claims,
+            &EncodingKey::from_secret(config::admin_jwt_password().as_bytes()),
+        )?;
+
+        Ok(payload::Json(VerifyAdminResponse { token: jwt_token }))
     }
 
     #[oai(path = "/location", method = "get", transform = "admin_middleware")]
@@ -134,28 +164,41 @@ impl AdminApi {
         &self,
         state: Data<&AppState>,
     ) -> poem::Result<payload::Json<LocationResponse>, AppError> {
-
         let db_locations = state.db.get_location().await?;
 
-        let locations = db_locations.iter().map(|l| Location {
-            id: l.id.to_string(),
-            name: l.name.clone(),
-            description: l.description.clone(),
-            image_url: l.image_url.clone(),
-        }).collect();
+        let locations = db_locations
+            .iter()
+            .map(|l| Location {
+                id: l.id.to_string(),
+                name: l.name.clone(),
+                description: l.description.clone(),
+                image_url: l.image_url.clone(),
+            })
+            .collect();
 
         Ok(payload::Json(LocationResponse { locations }))
     }
 
-    #[oai(path = "/location", method = "post", transform = "superadmin_middleware")]
+    #[oai(
+        path = "/location",
+        method = "post",
+        transform = "superadmin_middleware"
+    )]
     pub async fn create_location(
         &self,
         body: Json<CreateLocation>,
         state: Data<&AppState>,
     ) -> poem::Result<payload::Json<CreateLocationResponse>, AppError> {
-        let CreateLocation { name, description, image_url } = body.0;
+        let CreateLocation {
+            name,
+            description,
+            image_url,
+        } = body.0;
 
-        let location = state.db.create_location(name, description, image_url).await?;
+        let location = state
+            .db
+            .create_location(name, description, image_url)
+            .await?;
 
         Ok(payload::Json(CreateLocationResponse {
             message: "Location created successfully".to_string(),
