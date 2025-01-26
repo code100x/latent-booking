@@ -1,4 +1,6 @@
 use crate::Db;
+use chrono::DateTime;
+use chrono::Utc;
 use log::info;
 use serde::{Deserialize, Serialize};
 use sqlx::types::time::OffsetDateTime;
@@ -52,7 +54,7 @@ pub struct EventWithSeats {
     pub banner: String,
     pub admin_id: Uuid,
     pub location_id: Uuid,
-    pub start_time: chrono::NaiveDateTime,
+    pub start_time: DateTime<Utc>,
     pub published: bool,
     pub ended: bool,
     pub seat_types: Option<serde_json::Value>,

@@ -56,7 +56,7 @@ struct EventResponse {
     banner: String,
     published: bool,
     ended: bool,
-    seats_types: Vec<SeatType>,
+    seatTypes: Vec<SeatType>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -253,7 +253,7 @@ impl EventApi {
                 start_time: event.start_time.to_string(),
                 published: event.published,
                 ended: event.ended,
-                seats_types: event
+                seatTypes: event
                     .seat_types
                     .map(|seat_types_value| {
                         serde_json::from_value::<Vec<SeatType>>(seat_types_value)
@@ -299,7 +299,7 @@ impl EventApi {
             start_time: events.start_time.to_string(),
             published: events.published,
             ended: events.ended,
-            seats_types: events
+            seatTypes: events
                 .seat_types
                 .map(|seat_types_value| {
                     serde_json::from_value::<Vec<SeatType>>(seat_types_value)
@@ -338,14 +338,6 @@ impl EventApi {
                 message: "Invalid event ID".to_string(),
             }))
         })?;
-
-        if body.0.seats.is_empty() {
-            return Err(AppError::BadRequest(payload::Json(
-                crate::error::ErrorBody {
-                    message: "No seats provided".to_string(),
-                },
-            )));
-        }
 
         let seats: Result<Vec<SeatUpdateInput>, AppError> = body
             .0

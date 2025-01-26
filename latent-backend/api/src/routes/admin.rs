@@ -5,11 +5,9 @@ use crate::{
     AppState,
 };
 
-use jsonwebtoken::{encode, EncodingKey, Header};
 use poem::web::{Data, Json};
 use poem_openapi::{payload, Object, OpenApi};
 use serde::{Deserialize, Serialize};
-use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
