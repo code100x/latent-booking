@@ -14,6 +14,9 @@ struct Claims {
     exp: usize,  // Expiration time
 }
 
+#[derive(Debug, Clone)]
+pub struct TokenData(String);
+
 pub struct JwtMiddleware {
     secret: String, // Secret key for JWT verification
 }
@@ -55,7 +58,8 @@ impl<E: poem::Endpoint> poem::Endpoint for JwtMiddlewareImpl<E> {
 
             match decode::<Claims>(token, &decoding_key, &validation) {
                 Ok(token_data) => {
-                    req.extensions_mut().insert(token_data.claims.sub);
+                    req.extensions_mut()
+                        .insert(TokenData(token_data.claims.sub));
                     self.ep.call(req).await
                 }
                 Err(_) => Err(

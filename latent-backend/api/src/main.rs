@@ -45,6 +45,10 @@ async fn main() -> Result<(), std::io::Error> {
         OpenApiService::new(routes::admin::AdminApi, "Admin Latent Booking", "1.0")
             .server(format!("{}/admin", server_url));
 
+    let event_api_service =
+        OpenApiService::new(routes::event::EventApi, "Event Latent Booking", "1.0")
+            .server(format!("{}/admin/event", server_url));
+
     // Create Swagger UI
     let ui = api_service.swagger_ui();
 
@@ -52,6 +56,7 @@ async fn main() -> Result<(), std::io::Error> {
     let mut app = Route::new()
         .nest("/api/v1/user", api_service)
         .nest("/api/v1/admin", admin_api_service)
+        .nest("/api/v1/admin/event", event_api_service)
         .nest("/docs", ui);
 
     if cfg!(debug_assertions) {
