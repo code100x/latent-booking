@@ -43,7 +43,7 @@ struct Location {
     id: String,
     name: String,
     description: String,
-    image_url: String,
+    imageUrl: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -55,7 +55,7 @@ pub struct LocationResponse {
 pub struct CreateLocation {
     name: String,
     description: String,
-    image_url: String,
+    imageUrl: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -150,7 +150,7 @@ impl AdminApi {
                 id: l.id.to_string(),
                 name: l.name.clone(),
                 description: l.description.clone(),
-                image_url: l.image_url.clone(),
+                imageUrl: l.image_url.clone(),
             })
             .collect();
 
@@ -170,12 +170,12 @@ impl AdminApi {
         let CreateLocation {
             name,
             description,
-            image_url,
+            imageUrl,
         } = body.0;
 
         let location = state
             .db
-            .create_location(name, description, image_url)
+            .create_location(name, description, imageUrl)
             .await?;
 
         Ok(payload::Json(CreateLocationResponse {

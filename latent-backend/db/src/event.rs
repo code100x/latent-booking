@@ -95,25 +95,10 @@ impl Db {
 
         let event = sqlx::query_as::<_, Event>(
             r#"
-            WITH new_event AS (
-            INSERT INTO events (id, name, description, banner, admin_id, location_id, start_time)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING id
-            )
-            inserted_seats AS (
-            INSERT INTO seat_types (id, name, description, event_id, price, capacity)
-            SELECT 
-                uuid_generate_v4() AS id,
-                name,
-                description,
-                new_event.id,
-                price,
-                capacity
-            FROM UNNEST($8::text[], $9::text[], $10::int[], $11::int[]) AS t(name, description, price, capacity)
-            RETURNING *
-            )
-            SELECT id FROM new_event
-            "#,
+        INSERT INTO events (id, name, description, banner, admin_id, location_id, start_time)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id
+        "#,
         )
         .bind(Uuid::new_v4())
         .bind(input.name)
@@ -122,12 +107,32 @@ impl Db {
         .bind(input.admin_id)
         .bind(input.location_id)
         .bind(input.start_time)
+        .fetch_one(&self.client)
+        .await?;
+
+        // Insert seats only if the array is not empty
+        if !input.seats.is_empty() {
+            sqlx::query(
+            r#"
+            INSERT INTO seat_types (id, name, description, event_id, price, capacity)
+            SELECT 
+                uuid_generate_v4() AS id,
+                name,
+                description,
+                $1 AS event_id,
+                price,
+                capacity
+            FROM UNNEST($2::text[], $3::text[], $4::int[], $5::int[]) AS t(name, description, price, capacity)
+            "#,
+        )
+        .bind(event.id)
         .bind(seat_names)
         .bind(seat_descriptions)
         .bind(seat_prices)
         .bind(seat_capacities)
-        .fetch_one(&self.client)
+        .execute(&self.client)
         .await?;
+        }
 
         info!("Event and seats created/updated successfully");
         Ok(event)

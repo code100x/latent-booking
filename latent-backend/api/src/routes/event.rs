@@ -16,8 +16,8 @@ struct CreateEvent {
     name: String,
     description: String,
     banner: String,
-    location_id: String,
-    start_time: String,
+    locationId: String,
+    startTime: String,
     seats: Vec<SeatType>,
 }
 
@@ -120,15 +120,15 @@ impl EventApi {
     ) -> poem::Result<payload::Json<CreateEventResponse>, AppError> {
         println!("Admin ID from token: {:?}", admin_id.id);
 
-        let location_id = Uuid::parse_str(body.0.location_id.as_str()).map_err(|_| {
-            AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
+        let location_id = Uuid::parse_str(body.0.locationId.as_str()).map_err(|_| {
+            AppError::InternalServerErroInternalServerError(payload::Json(crate::error::ErrorBody {
                 message: "Invalid location ID".to_string(),
             }))
         })?;
 
         let format = format_description!("[year]-[month]-[day] [hour]:[minute]:[second]");
         let start_time =
-            PrimitiveDateTime::parse(body.0.start_time.as_str(), &format).map_err(|_| {
+            PrimitiveDateTime::parse(body.0.startTime.as_str(), &format).map_err(|_| {
                 AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid start time".to_string(),
                 }))
