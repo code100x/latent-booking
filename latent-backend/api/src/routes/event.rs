@@ -121,7 +121,7 @@ impl EventApi {
         println!("Admin ID from token: {:?}", admin_id.id);
 
         let location_id = Uuid::parse_str(body.0.locationId.as_str()).map_err(|_| {
-            AppError::InternalServerErroInternalServerError(payload::Json(crate::error::ErrorBody {
+            AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
                 message: "Invalid location ID".to_string(),
             }))
         })?;
