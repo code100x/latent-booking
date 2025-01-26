@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, Api, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState, utils::{totp, twilio}};
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct CreateUser {
@@ -17,7 +17,7 @@ struct CreateUserResponse {
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct CreateUserVerify {
     number: String,
-    totp: String,
+    otp: String,
     name: String,
 }
 
@@ -39,11 +39,13 @@ struct SignInResponse {
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct SignInVerify {
     number: String,
-    totp: String,
+    otp: String,
 }
 
+pub struct UserApi;
+
 #[OpenApi]
-impl Api {
+impl UserApi {
     /// Create a new user
     #[oai(path = "/signup", method = "post")]
     async fn create_user(&self, body: Json<CreateUser>, state: Data<&AppState>) -> poem::Result<payload::Json<CreateUserResponse>, AppError> {
@@ -75,17 +77,19 @@ impl Api {
         body: Json<CreateUserVerify>,
         state: Data<&AppState>
     ) -> poem::Result<payload::Json<VerifyUserResponse>, AppError> {
-        let CreateUserVerify { number, totp: otp, name } = body.0;
+        let CreateUserVerify { number, otp, name } = body.0;
         
         // Verify OTP
         if cfg!(not(debug_assertions)) {
             if !totp::verify_token(&number, "AUTH", &otp) {
+                println!("Invalid OTP");
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));
             }
         }
 
+        println!("Verifying user with number: {}", number);
         let token = state.db.verify_user(number, name).await?;
         
         Ok(payload::Json(VerifyUserResponse { token }))
@@ -100,8 +104,18 @@ impl Api {
     ) -> poem::Result<payload::Json<SignInResponse>, AppError> {
         let number = body.0.number;
         
-        let _user = state.db.get_user_by_number(&number).await?;
+        let user_result = state.db.get_user_by_number(&number).await;
         
+        if let Err(sqlx::Error::RowNotFound) = user_result {
+            return Err(AppError::AdminNotFound(payload::Json(
+                crate::error::ErrorBody {
+                    message: "User not found".to_string(),
+                },
+            )));
+        }
+
+        let _user = user_result?;
+
         // Generate and send OTP
         let otp = totp::get_token(&number, "AUTH");
         if cfg!(not(debug_assertions)) {
@@ -126,7 +140,7 @@ impl Api {
         body: Json<SignInVerify>,
         state: Data<&AppState>
     ) -> poem::Result<payload::Json<VerifyUserResponse>, AppError> {
-        let SignInVerify { number, totp: otp } = body.0;
+        let SignInVerify { number, otp } = body.0;
 
         // Verify OTP
         if cfg!(not(debug_assertions)) {
