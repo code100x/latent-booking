@@ -1,3 +1,4 @@
+use db::DBError;
 use poem_openapi::{payload::Json, ApiResponse, Object};
 use poem::error::Error as PoemError;
 use jsonwebtoken::errors::Error as JwtError;
@@ -64,5 +65,19 @@ impl From<JwtError> for AppError {
         AppError::InternalServerError(Json(ErrorBody {
             message: format!("JWT error: {}", err),
         }))
+    }
+}
+
+impl From<DBError> for AppError {
+    fn from(err: DBError) -> Self {
+        match err {
+            DBError::NotFound(msg) => AppError::NotFound(Json(ErrorBody {
+                message: msg,
+            })),
+            DBError::InvalidInput(msg) => AppError::BadRequest(Json(ErrorBody {
+                message: msg,
+            })),
+            DBError::DatabaseError(sqlx_err) => sqlx_err.into(), // Convert sqlx::Error to AppError
+        }
     }
 }
