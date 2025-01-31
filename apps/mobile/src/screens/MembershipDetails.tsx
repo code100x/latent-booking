@@ -80,7 +80,7 @@ const MembershipDetails = ({ navigation }: MembershipDetailsProps) => {
               borderColor="#FFFFFF80"
               icon={YoutubeIcon}
               title="Already a YouTube Member?"
-              description="Connect your YouTube account and get Latent+ membership on the app"
+              description={`Connect your YouTube account and ${'\n'}get Latent+ membership on the app`}
             />
           </View>
         </View>
