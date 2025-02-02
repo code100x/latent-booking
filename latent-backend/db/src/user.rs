@@ -1,16 +1,19 @@
 use crate::Db;
+use chrono::NaiveDateTime;
 use log::info;
 use serde::{Deserialize, Serialize};
 use sqlx::Error;
 use sqlx::FromRow;
 use uuid::Uuid;
 
-#[derive(FromRow, Serialize, Deserialize)]
+#[derive(FromRow, Serialize, Deserialize, Debug)]
 pub struct User {
     pub id: Uuid,
     pub number: String,
     pub name: String,
     pub verified: bool,
+    pub otp_request_count: i32,
+    pub updated_at: NaiveDateTime
 }
 
 #[derive(sqlx::Type, Serialize, Deserialize)]
@@ -88,5 +91,12 @@ impl Db {
 
         info!("Signin verified for user with id: {}", user.id);
         Ok(user.id.to_string())
+    }
+
+    pub async fn update_otpc_by_number(&self, phone_number: &str) -> Result<bool, Error> {
+        info!("Updating OTP count for number: {}", phone_number);
+
+        let _ = sqlx::query!("UPDATE users SET otp_request_count = otp_request_count + 1, updated_at = CURRENT_TIMESTAMP WHERE number = $1", phone_number).execute(&self.client).await?;
+        Ok(true)
     }
 }

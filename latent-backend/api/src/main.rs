@@ -4,18 +4,21 @@ use poem::{
     EndpointExt, Route, Server,
 };
 use poem_openapi::OpenApiService;
+use services::sms_service::SmsService;
 use std::{env, sync::Arc};
 
 mod error;
 mod routes;
 mod utils;
 mod middleware;
+mod services;
 
 use db::Db;
 use dotenv::dotenv;
 
 #[derive(Clone)]
 pub struct AppState {
+    sms_service: Arc<SmsService>,
     db: Arc<Db>,
 }
 
@@ -34,18 +37,17 @@ async fn main() -> Result<(), std::io::Error> {
     db.init().await.expect("Failed to initialize database");
     let db = Arc::new(db);
 
+    // Injecting the sms service
+    let sms_service = Arc::new(SmsService::default());
+
     // API services
-    let user_api_service = OpenApiService::new(routes::user::user::UserApi, "Latent Booking API", "1.0")
-        .server(format!("{}/user", server_url));
+    let user_api_service = OpenApiService::new(routes::user::user::UserApi, "Latent Booking API", "1.0");
 
-    let admin_api_service = OpenApiService::new(routes::admin::admin::AdminApi, "Admin Latent Booking API", "1.0")
-        .server(format!("{}/admin", server_url));
+    let admin_api_service = OpenApiService::new(routes::admin::admin::AdminApi, "Admin Latent Booking API", "1.0");
 
-    let location_api_service =  OpenApiService::new(routes::admin::location::LocationApi, "Location Latent Booking API", "1.0")
-    .server(format!("{}/location", server_url));
+    let location_api_service =  OpenApiService::new(routes::admin::location::LocationApi, "Location Latent Booking API", "1.0");
 
-    let event_api_service = OpenApiService::new(routes::admin::event::EventApi,  "Location Latent Booking API", "1.0")
-    .server(format!("{}/event", server_url));
+    let event_api_service = OpenApiService::new(routes::admin::event::EventApi,  "Location Latent Booking API", "1.0");
 
     // Swagger UI for each API group
     let user_ui = user_api_service.swagger_ui();
@@ -74,7 +76,7 @@ async fn main() -> Result<(), std::io::Error> {
         }
 
     // middleware and shared state
-    let app = app.with(Cors::new()).data(AppState { db });
+    let app = app.with(Cors::new()).data(AppState { sms_service,  db });
 
     println!("Server running at http://localhost:{}", port);
     println!("User API docs available at http://localhost:{}/docs/user", port);

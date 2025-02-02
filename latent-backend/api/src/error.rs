@@ -1,4 +1,7 @@
-use poem_openapi::{payload::Json, ApiResponse, Object};
+use poem_openapi::{
+    payload::{self, Json},
+    ApiResponse, Object,
+};
 
 #[derive(Debug, Object)]
 pub struct ErrorBody {
@@ -30,6 +33,14 @@ pub enum AppError {
     /// Bad request (400)
     #[oai(status = 400)]
     BadRequest(Json<ErrorBody>),
+
+    // Too Many Requests
+    #[oai(status = 429)]
+    RateLimitted(Json<ErrorBody>),
+
+    // Any 3rd Party API Call Error
+    #[oai(status = 500)]
+    NetworkError(Json<ErrorBody>),
 }
 
 impl From<sqlx::Error> for AppError {
@@ -38,9 +49,26 @@ impl From<sqlx::Error> for AppError {
             sqlx::Error::RowNotFound => AppError::NotFound(Json(ErrorBody {
                 message: "Resource not found".to_string(),
             })),
-            _ => AppError::Database(Json(ErrorBody {
-                message: "Database error occurred".to_string(),
+
+            e => AppError::Database(Json(ErrorBody {
+                // message: "Database error occurred".to_string(),
+                message: format!("{:?}", e.to_string()),
             })),
         }
+    }
+}
+
+impl From<reqwest::Error> for AppError {
+    fn from(err: reqwest::Error) -> Self {
+        if let Some(status) = err.status() {
+            if status != reqwest::StatusCode::OK {
+                return AppError::NetworkError(payload::Json(ErrorBody {
+                    message: "Cannot send OTP now. Please try again later.".to_string(),
+                }));
+            }
+        }
+        AppError::InternalServerError(payload::Json(ErrorBody {
+            message: "Somthing went wrong".to_string(),
+        }))
     }
 }
