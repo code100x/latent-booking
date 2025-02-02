@@ -13,9 +13,9 @@ export function LandingPage() {
     <>
       <main className="min-h-screen bg-black">
         <Navbar />
-        <div className="container mx-auto px-0 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start ">
-            <div className=" h-full  flex items-center">
+        <div className="container mx-auto px-16 py-12">
+          <div className="grid grid-cols-1  lg:grid-cols-2 gap-12 items-start ">
+            <div className=" h-full flex items-center">
               <div className="flex flex-col gap-10">
                 <HeroText />
                 <JoinButton />

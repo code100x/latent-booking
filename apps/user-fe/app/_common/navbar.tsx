@@ -1,18 +1,26 @@
 "use client";
-
 import Link from "next/link";
 import { NavLogo } from "../assets";
 import Image from "next/image";
 import { figtree, manrope } from "../lib/fonts";
 import { cn } from "@repo/ui/utils";
 import { usePathname } from "next/navigation";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoginDialog } from "../_components/signup/singupDialog";
+import Cookies from "js-cookie"; // Make sure to install this package
+import { getCookies } from "../../actions/auth";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+
+  useEffect(() => {
+    const cookie  = getCookies();
+    setIsAuthenticated(!!cookie);
+  }, []);
 
   return (
     <nav className="w-full bg-black">
@@ -66,17 +74,31 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <button
-          onClick={() => setIsLoginOpen(true)}
-          className={cn(
-            "px-6 py-2 bg-gradient-to-r from-[#aa823d] via-[#efe188] to-[#d1b759]",
-            "rounded-lg text-neutral-950 font-semibold",
-            "hover:opacity-90 transition-opacity",
-            figtree.className
-          )}
-        >
-          Login
-        </button>
+        {isAuthenticated ? (
+          <Link
+            href="/episodes"
+            className={cn(
+              "px-6 py-2 bg-gradient-to-r from-[#aa823d] via-[#efe188] to-[#d1b759]",
+              "rounded-lg text-neutral-950 font-semibold",
+              "hover:opacity-90 transition-opacity",
+              figtree.className
+            )}
+          >
+            Book Now
+          </Link>
+        ) : (
+          <button
+            onClick={() => setIsLoginOpen(true)}
+            className={cn(
+              "px-6 py-2 bg-gradient-to-r from-[#aa823d] via-[#efe188] to-[#d1b759]",
+              "rounded-lg text-neutral-950 font-semibold",
+              "hover:opacity-90 transition-opacity",
+              figtree.className
+            )}
+          >
+            Login
+          </button>
+        )}
 
         {/* Login Dialog */}
         <LoginDialog

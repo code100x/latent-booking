@@ -7,11 +7,12 @@ import testRouter from "./test";
 import bookingsRouter from "./user/bookings";
 import transactionRouter from "./user/transaction"
 import superAdminRouter from "./superadmin";
+import razorpayRouter from "./razorpay"
 
 const router: Router = Router();
 
 router.use("/user/bookings", bookingsRouter);
-router.use("/razorpay", razorpayRouter);
+router.use("/razorpay", razorpayRouter); // razorpayRouter wasn't imported
 router.use("/user/transaction", transactionRouter);
 router.use("/user", userRouter);
 router.use("/admin/event", adminEventRouter);

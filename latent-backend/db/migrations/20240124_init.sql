@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS admins (
     number VARCHAR(15) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL DEFAULT '',
     verified BOOLEAN NOT NULL DEFAULT FALSE,
-    type admin_type NOT NULL
+    type admin_type NOT NULL DEFAULT 'Creator'
 );
 
 -- Create locations table

@@ -10,6 +10,7 @@ impl Default for Config {
     fn default() -> Self {
         let db_url = env::var("DATABASE_URL")
             .expect("DATABASE_URL must be set");
+        info!("DATABASE_URL: {}", db_url); // logging the env 
         Self {
             db_url
         }

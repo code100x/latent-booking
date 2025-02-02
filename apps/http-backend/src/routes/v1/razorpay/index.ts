@@ -41,3 +41,5 @@ router.post("/payment", async (req, res) => {
         })
     }
 });
+
+export default router; // wasn't exported

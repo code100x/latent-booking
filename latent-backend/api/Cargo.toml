@@ -12,8 +12,12 @@ serde = "1.0.217"
 serde_json = "1.0"
 thiserror = "2.0.11"
 tokio = { version = "1.43.0", features = ["full"] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "tls-native-tls"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres",  "chrono",  "tls-native-tls"] }
 reqwest = { version = "0.11.13", features = ["json"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
 env_logger = "0.10"
 log = "0.4"
+time = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
 sha2 = "0.10"
+jsonwebtoken = "8.1"

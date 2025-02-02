@@ -4,11 +4,12 @@ use poem::{
     EndpointExt, Route, Server,
 };
 use poem_openapi::OpenApiService;
-use std::sync::Arc;
+use std::{env, sync::Arc};
 
 mod error;
 mod routes;
 mod utils;
+mod middleware;
 
 use db::Db;
 use dotenv::dotenv;
@@ -18,40 +19,69 @@ pub struct AppState {
     db: Arc<Db>,
 }
 
-pub struct Api;
-
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    // Load environment variables
     dotenv().ok();
-    
-    // Initialize logger
+
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
-    // Create and initialize database
+    let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+    let admin_secret = env::var("ADMIN_JWT_PASSWORD").unwrap_or_else(|_| "admin".to_string());
+    println!("admin_secret inside main {:}", admin_secret);
+    let server_url = format!("http://localhost:{}/api/v1", port);
+
     let db = Db::new().await;
     db.init().await.expect("Failed to initialize database");
     let db = Arc::new(db);
 
-    // Create API service
-    let api_service = OpenApiService::new(Api, "Latent Booking", "1.0")
-        .server("http://localhost:3000/api/v1");
-    
-    // Create Swagger UI
-    let ui = api_service.swagger_ui();
+    // API services
+    let user_api_service = OpenApiService::new(routes::user::user::UserApi, "Latent Booking API", "1.0")
+        .server(format!("{}/user", server_url));
 
-    // Create route with CORS
-    let app = Route::new()
-        .nest("/api/v1", api_service)
-        .nest("/docs", ui)
-        .with(Cors::new())
-        .data(AppState { db });
+    let admin_api_service = OpenApiService::new(routes::admin::admin::AdminApi, "Admin Latent Booking API", "1.0")
+        .server(format!("{}/admin", server_url));
 
-    println!("Server running at http://localhost:3000");
-    println!("API docs at http://localhost:3000/docs");
+    let location_api_service =  OpenApiService::new(routes::admin::location::LocationApi, "Location Latent Booking API", "1.0")
+    .server(format!("{}/location", server_url));
+
+    let event_api_service = OpenApiService::new(routes::admin::event::EventApi,  "Location Latent Booking API", "1.0")
+    .server(format!("{}/event", server_url));
+
+    // Swagger UI for each API group
+    let user_ui = user_api_service.swagger_ui();
+    let admin_ui = admin_api_service.swagger_ui();
+    let location_ui = location_api_service.swagger_ui();
+    let events_ui = event_api_service.swagger_ui();
+
+    // routes
+    let mut app = Route::new()
+        .nest("/api/v1/users", user_api_service)
+        .nest("/api/v1/admin", admin_api_service)
+        .nest("/api/v1/admin/location", location_api_service)
+        .nest("/api/v1/admin/event", event_api_service.with(middleware::admin::AuthMiddleware::new(admin_secret)))
+        .nest("/docs/user", user_ui)
+        .nest("/docs/admin", admin_ui)
+        .nest("/docs/admin/location", location_ui)
+        .nest("/docs/admin/event", events_ui);
+
+    // Test route
+        if cfg!(debug_assertions) {
+            let test_api_service = OpenApiService::new(routes::test::test::TestApi, "Test Latent Booking", "1.0")
+                .server(format!("{}/test", server_url));
     
-    // Start server
-    Server::new(TcpListener::bind("0.0.0.0:3000"))
+            app = app.nest("/api/v1/test", test_api_service);
+            println!("Test routes enabled (development mode)");
+        }
+
+    // middleware and shared state
+    let app = app.with(Cors::new()).data(AppState { db });
+
+    println!("Server running at http://localhost:{}", port);
+    println!("User API docs available at http://localhost:{}/docs/user", port);
+    println!("Admin API docs available at http://localhost:{}/docs/admin", port);
+    
+
+    Server::new(TcpListener::bind(format!("0.0.0.0:{}", port)))
         .run(app)
         .await
 }

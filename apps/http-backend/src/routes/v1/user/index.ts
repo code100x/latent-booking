@@ -6,11 +6,12 @@ import { JWT_PASSWORD } from "../../../config";
 import { sendMessage } from "../../../utils/twilio";
 import { getToken, verifyToken } from "../../../utils/totp";
 import { SignInSchema, SignInVerifySchema, UserSignUpSchema, UserSignUpVerifySchema } from "@repo/common/types";
+import { setCookie } from "../../../utils/cookie";
 
 const router: Router = Router();
 
 router.post("/signup", async (req, res) => {
-
+    console.log("req.body", req.body);
     const parsedNumber = UserSignUpSchema.safeParse(req.body);
     if (!parsedNumber.success) {
         res.status(400).json({
@@ -33,10 +34,11 @@ router.post("/signup", async (req, res) => {
 
         }
     })
-
-    if (process.env.NODE_ENV === "production") {
+    console.log(process.env.NODE_ENV)
+    if (process.env.NODE_ENV === "dev") {
         // send otp to user
         try {
+            console.log("tOtp", totp);
             await sendMessage(`Your otp for logging into latent is ${totp}`, number)
         } catch (e) {
             res.status(500).json({
@@ -46,9 +48,7 @@ router.post("/signup", async (req, res) => {
         }
     }
 
-    res.json({
-        id: user.id
-    })
+   setCookie(res, user.id, 200, "SIGNUP");
 });
 
 router.post("/signup/verify", async (req, res) => {
@@ -64,7 +64,7 @@ router.post("/signup/verify", async (req, res) => {
     const otp = parsedData.data.totp;
     const name = parsedData.data.name
 
-    if (process.env.NODE_ENV === "production" && !verifyToken(number, "AUTH", otp)) {
+    if (process.env.NODE_ENV === "dev" && !verifyToken(number, "AUTH", otp)) {
         res.json({
             message: "Invalid token"
         })
@@ -81,13 +81,7 @@ router.post("/signup/verify", async (req, res) => {
         }
     })
 
-    const token = jwt.sign({
-        userId: user.id
-    }, JWT_PASSWORD)
-
-    res.json({
-        token
-    })
+    setCookie(res, user.id, 200, "LOGIN");
 
 });
 
@@ -160,9 +154,7 @@ router.post("/signin/verify", async (req, res) => {
         userId: user.id
     }, JWT_PASSWORD)
 
-    res.json({
-        token
-    })
+    setCookie(res, user.id, 200, "VERIFY")
 
 });
 

@@ -9,5 +9,7 @@ export function getToken(number: string, type: TokenType) {
 }
 
 export function verifyToken(number: string, type: TokenType, otp: string) {
-    return verifyTokenLib(number + type + TOPT_SECRET,  otp)
+    const result = verifyTokenLib(number + type + TOPT_SECRET,  otp);
+    console.log("result, ", result)
+    return result;
 }

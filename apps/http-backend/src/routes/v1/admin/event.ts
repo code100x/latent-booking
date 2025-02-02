@@ -195,15 +195,15 @@ router.put("/seats/:eventId", adminMiddleware, async (req, res) => {
     })
 
     const newSeats = data.seats.filter(x => !x.id);
-    const updatedSeats = data.seats.filter(x => x.id && currentSeats.find(y => y.id === x.id));
-    const deletedSeats = currentSeats.filter(x => !data.seats.find(y => y.id === x.id));
+    const updatedSeats = data.seats.filter(x => x.id && currentSeats.find((y: { id: string | undefined; }) => y.id === x.id));
+    const deletedSeats = currentSeats.filter((x: { id: string | undefined; }) => !data.seats.find(y => y.id === x.id));
 
     try {
         await client.$transaction([
             client.seatType.deleteMany({
                 where: {
                     id: {
-                        "in": deletedSeats.map(x => x.id)
+                        "in": deletedSeats.map((x: { id: any; }) => x.id)
                     }
                 }
             }),

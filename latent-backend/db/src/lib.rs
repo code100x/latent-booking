@@ -1,8 +1,11 @@
 use sqlx::postgres::PgPool;
 use log::{info, error};
 
-mod config;
-mod user;
+pub mod config;
+pub mod user;
+pub mod location;
+pub mod events;
+pub mod admin;
 
 pub use user::User;
 

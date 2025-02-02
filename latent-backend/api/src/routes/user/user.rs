@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, Api, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState, utils::{totp, twilio}};
+
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 struct CreateUser {
@@ -41,9 +42,22 @@ struct SignInVerify {
     number: String,
     totp: String,
 }
+#[derive(Debug, Serialize, Deserialize, Object)]
+struct CreateSuperAdmin {
+    number: String,
+    
+}
+
+#[derive(Debug, Deserialize, Serialize, Object)]
+struct CreateSuperAdminResponse {
+    message: String,
+    id: String,
+}
+
+pub struct  UserApi;
 
 #[OpenApi]
-impl Api {
+impl UserApi {
     /// Create a new user
     #[oai(path = "/signup", method = "post")]
     async fn create_user(&self, body: Json<CreateUser>, state: Data<&AppState>) -> poem::Result<payload::Json<CreateUserResponse>, AppError> {
@@ -61,6 +75,13 @@ impl Api {
         } else {
             println!("Development mode: OTP is {}", otp);
         }
+
+
+        twilio::send_message(&format!("Your OTP for signing up to Latent is {}", otp), &number)
+        .await
+        .map_err(|_| AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
+            message: "Failed to send OTP".to_string(),
+        })))?;
 
         Ok(payload::Json(CreateUserResponse {
             message: "User created successfully".to_string(),
@@ -141,4 +162,5 @@ impl Api {
         
         Ok(payload::Json(VerifyUserResponse { token }))
     }
+
 }

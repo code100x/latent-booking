@@ -3,28 +3,33 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b",
+    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "dev": "npm run build && NODE_ENV=dev node dist/index.js"
   },
   "devDependencies": {
-    "@repo/db": "workspace:*",
     "@repo/common": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "esbuild": "0.24.2"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@repo/redis": "workspace:*",
     "@types/authenticator": "^1.1.4",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "authenticator": "^1.1.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "twilio": "^5.4.2",
-    "@repo/redis": "workspace:*"
+    "twilio": "^5.4.2"
   }
 }

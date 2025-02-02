@@ -58,6 +58,7 @@ router.post("/", userMiddleware, async (req, res) => {
                 userId: userId,
                 status: "Pending",
                 sequenceNumber: counter,
+                currentSequenceNumber: counter, // was giving a type error so added this TODO: need to figure out why
                 seats: {
                     create: data.seats.map(seat => ({
                         seatTypeId: seat.id,
