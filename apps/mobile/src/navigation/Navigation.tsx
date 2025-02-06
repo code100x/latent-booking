@@ -28,6 +28,7 @@ const Navigation = () => {
         />
         <Stack.Screen name="MyDrawer" component={MyDrawer} />
         <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="VideoPlayer" component={Screens.VideoPlayer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

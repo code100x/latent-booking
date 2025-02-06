@@ -18,7 +18,6 @@ import Gradient from '../assets/gradient.png';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { videos } from '../data';
 import VideoCard from '../components/VideoCard';
-import IonIcon from 'react-native-vector-icons/Ionicons';
 
 type HomeProps = CompositeScreenProps<
   DrawerScreenProps<DrawerParamList, 'Home'>,
@@ -60,7 +59,9 @@ const Home = ({ navigation }: HomeProps) => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={item => item.id.toString()}
             className="mt-4"
-            renderItem={({ item }) => <VideoCard item={item} />}
+            renderItem={({ item }) => (
+              <VideoCard item={item} navigation={navigation} />
+            )}
           />
         </View>
         <View className="mt-10">
@@ -76,7 +77,9 @@ const Home = ({ navigation }: HomeProps) => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={item => item.id.toString()}
             className="mt-4"
-            renderItem={({ item }) => <VideoCard item={item} />}
+            renderItem={({ item }) => (
+              <VideoCard item={item} navigation={navigation} />
+            )}
           />
         </View>
       </View>

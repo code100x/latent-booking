@@ -4,6 +4,7 @@ export { default as Email } from './Email';
 export { default as Otp } from './Otp';
 export { default as Name } from './Name';
 export { default as MembershipDetails } from './MembershipDetails';
+export { default as VideoPlayer } from './VideoPlayer';
 
 // Drawer Screens
 export { default as Home } from './Home';

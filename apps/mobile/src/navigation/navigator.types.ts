@@ -6,4 +6,5 @@ export type RootStackParamList = {
   MembershipDetails: undefined;
   MyDrawer: undefined;
   Notifications: undefined;
+  VideoPlayer: { videoId: string | number };
 };
