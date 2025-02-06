@@ -10,11 +10,24 @@ export interface VideoCardProps {
     thumbnail: string;
     locked: boolean;
   };
+  navigation: {
+    navigate: (screen: string, params: { id: string | number }) => void;
+  };
 }
 
-const VideoCard = ({ item }: VideoCardProps) => {
+const VideoCard = ({ item, navigation }: VideoCardProps) => {
+  const thumbnail = item?.thumbnail ? item.thumbnail : Thumbnail;
+
   return (
-    <TouchableOpacity className="relative w-48 mr-4" activeOpacity={0.8}>
+    <TouchableOpacity
+      className="relative w-48 mr-4"
+      activeOpacity={0.8}
+      onPress={
+        item?.locked
+          ? () => {}
+          : () => navigation.navigate('VideoPlayer', { id: item.id })
+      }
+    >
       {item?.locked && (
         <View className="absolute top-12 left-20 z-50">
           <MaterialIcon name="lock" size={24} color="#F8D48D" />
@@ -27,7 +40,7 @@ const VideoCard = ({ item }: VideoCardProps) => {
         }`}
       >
         <Image
-          source={item?.thumbnail || Thumbnail}
+          source={thumbnail}
           className="w-full h-32 border border-[#F8D48D40] rounded-lg"
           style={{ resizeMode: 'cover' }}
         />
