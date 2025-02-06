@@ -2,17 +2,17 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import BronzeIcon from '../assets/bronze.png';
 
 interface SubscriptionCardProps {
   color1: string;
   color2: string;
   borderColor: string;
-  icon: string;
+  icon: any;
   title: string;
   description: string;
   originalPrice?: number;
   discountedPrice?: number;
+  onPress?: () => void;
 }
 
 const SubscriptionCard = ({
@@ -24,45 +24,66 @@ const SubscriptionCard = ({
   description,
   originalPrice,
   discountedPrice,
+  onPress,
 }: SubscriptionCardProps) => {
   return (
-    <LinearGradient
-      colors={[color1, color2]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      className={`rounded-md border border-[${borderColor}] mb-4`}
-    >
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => {}}
-        className="flex flex-row items-start p-[14px]"
+    <>
+      <LinearGradient
+        colors={[color1, color2]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: borderColor,
+          marginBottom: 16,
+        }}
       >
-        <Image source={icon || BronzeIcon} className="w-12 h-12 mr-2" />
-        <View className="flex flex-1 flex-row items-center justify-between">
-          <View>
-            <Text className="text-[#F4F4F3] text-base font-bold mb-[6px]">
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 14 }}
+          onPress={onPress}
+        >
+          <Image
+            source={icon}
+            style={{ width: 48, height: 48, marginRight: 8 }}
+          />
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                color: '#F4F4F3',
+                fontSize: 16,
+                fontWeight: 'bold',
+                marginBottom: 6,
+              }}
+            >
               {title}
             </Text>
-            <Text className="text-[#FFFFFFB2] font-medium text-xs">
+            <Text style={{ color: '#FFFFFFB2', fontSize: 12 }}>
               {description}
             </Text>
             {originalPrice && discountedPrice && (
-              <View className="flex flex-row space-x-2 mt-4">
-                <Text className="text-[#F4F4F3] font-semibold text-lg opacity-50 line-through">
+              <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                <Text
+                  style={{
+                    color: '#F4F4F3',
+                    fontSize: 16,
+                    textDecorationLine: 'line-through',
+                    opacity: 0.5,
+                  }}
+                >
                   ₹{originalPrice}
                 </Text>
-                <Text className="text-[#F4F4F3] font-semibold text-lg">
+                <Text style={{ color: '#F4F4F3', fontSize: 16, marginLeft: 8 }}>
                   ₹{discountedPrice}
                 </Text>
               </View>
             )}
           </View>
-          <View>
-            <MaterialIcon name="chevron-right" size={24} color="#FFF" />
-          </View>
-        </View>
-      </TouchableOpacity>
-    </LinearGradient>
+          <MaterialIcon name="chevron-right" size={24} color="#FFF" />
+        </TouchableOpacity>
+      </LinearGradient>
+    </>
   );
 };
 
