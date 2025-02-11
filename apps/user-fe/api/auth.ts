@@ -48,6 +48,18 @@ export const authApi = {
     return response.data;
   },
 
+  resentOtp: async (phone: string) => {
+    const formData = new FormData();
+    formData.append("mobile", phone);
+    formData.append("type", "text");
+
+    const response = await apiClient.post(
+      `/post/resend_otp_with_call`,
+      formData
+    );
+    return response.data;
+  },
+
   verifyOtp: async (params: OtpVerificationParams) => {
     const response = await apiClient.get(`/get/otpverify`, {
       params: params,

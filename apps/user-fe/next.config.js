@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "files.vidstack.io",
       },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
     ],
   },
 };

@@ -1,6 +1,6 @@
 // Episodes related API calls
-import { apiClient } from './client';
-import { PaginatedResponse } from './types';
+import { apiClient } from "./client";
+import { PaginatedResponse } from "./types";
 
 export interface Episode {
   id: string;
@@ -13,9 +13,12 @@ export interface Episode {
 
 export const episodesApi = {
   getAll: async (page = 1, limit = 10) => {
-    const response = await apiClient.get<PaginatedResponse<Episode>>('/episodes', {
-      params: { page, limit },
-    });
+    const response = await apiClient.get<PaginatedResponse<Episode>>(
+      "/episodes",
+      {
+        params: { page, limit },
+      }
+    );
     return response.data;
   },
 
@@ -25,9 +28,12 @@ export const episodesApi = {
   },
 
   getPremiumEpisodes: async (page = 1, limit = 10) => {
-    const response = await apiClient.get<PaginatedResponse<Episode>>('/episodes/premium', {
-      params: { page, limit },
-    });
+    const response = await apiClient.get<PaginatedResponse<Episode>>(
+      "/episodes/premium",
+      {
+        params: { page, limit },
+      }
+    );
     return response.data;
   },
-}; 
+};

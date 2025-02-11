@@ -8,10 +8,10 @@ import { Button } from "@repo/ui/button";
 import { IMAGES } from "../_assets";
 import { MenuIcon, XIcon } from "lucide-react";
 import { AnimatedBackground } from "./animatedBackground";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
-  const { isAuthenticated, isValidating } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -102,10 +102,7 @@ export default function Navbar() {
 
       {/* Conditional rendering of Login Button or Profile */}
       <div className="hidden lg:block">
-        {isValidating ? (
-          // Show loading state
-          <div className="w-10 h-10 rounded-full bg-neutral-800 animate-pulse" />
-        ) : isAuthenticated ? (
+        {isAuthenticated ? (
           <Profile />
         ) : (
           <Button onClick={() => setIsLoginOpen(true)} variant="accent">

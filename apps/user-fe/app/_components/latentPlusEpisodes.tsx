@@ -9,33 +9,33 @@ export const premiumEpisodes = [
   {
     title:
       "India's Got Latent ft. Ashish Chanchlani, Beer Biceps, Rebel Kid | EP 1",
-    thumbnail: "https://files.vidstack.io/sprite-fight/poster.webp",
+    thumbnail: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
     slug: "episode-1",
-    videoUrl: "https://files.vidstack.io/sprite-fight/poster.webp",
+    videoUrl: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
   },
   {
     title: "India's Got Latent ft. Tanmay Bhat, CarryMinati | EP 2",
-    thumbnail: "https://files.vidstack.io/sprite-fight/poster.webp",
+    thumbnail: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
     slug: "episode-2",
-    videoUrl: "https://files.vidstack.io/sprite-fight/poster.webp",
+    videoUrl: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
   },
   {
     title: "India's Got Latent ft. Zakir Khan, BB Ki Vines | EP 3",
-    thumbnail: "https://files.vidstack.io/sprite-fight/poster.webp",
+    thumbnail: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
     slug: "episode-3",
-    videoUrl: "https://files.vidstack.io/sprite-fight/poster.webp",
+    videoUrl: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
   },
   {
     title: "India's Got Latent ft. Harsh Gujral, Technical Guruji | EP 4",
-    thumbnail: "https://files.vidstack.io/sprite-fight/poster.webp",
+    thumbnail: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
     slug: "episode-4",
-    videoUrl: "https://files.vidstack.io/sprite-fight/poster.webp",
+    videoUrl: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
   },
   {
     title: "India's Got Latent ft. Anubhav Bassi, Flying Beast | EP 5",
-    thumbnail: "https://files.vidstack.io/sprite-fight/poster.webp",
+    thumbnail: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
     slug: "episode-5",
-    videoUrl: "https://files.vidstack.io/sprite-fight/poster.webp",
+    videoUrl: "https://m.media-amazon.com/images/M/MV5BNDViYTM1MDUtZjZlZi00YTEyLWFiNmYtZGQ0Yjk0Mzk3MmY0XkEyXkFqcGc@._V1_.jpg",
   },
 ];
 

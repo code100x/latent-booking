@@ -1,6 +1,6 @@
 // Events related API calls
-import { apiClient } from './client';
-import { PaginatedResponse } from './types';
+import { apiClient } from "./client";
+import { PaginatedResponse } from "./types";
 
 export interface Event {
   id: string;
@@ -17,7 +17,7 @@ export interface Event {
 
 export const eventsApi = {
   getAll: async (page = 1, limit = 10) => {
-    const response = await apiClient.get<PaginatedResponse<Event>>('/events', {
+    const response = await apiClient.get<PaginatedResponse<Event>>("/events", {
       params: { page, limit },
     });
     return response.data;
@@ -29,7 +29,9 @@ export const eventsApi = {
   },
 
   bookTicket: async (eventId: string, quantity: number) => {
-    const response = await apiClient.post(`/events/${eventId}/book`, { quantity });
+    const response = await apiClient.post(`/events/${eventId}/book`, {
+      quantity,
+    });
     return response.data;
   },
-}; 
+};

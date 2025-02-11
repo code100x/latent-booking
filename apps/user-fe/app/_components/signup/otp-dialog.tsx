@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import Image from "next/image";
 import { cn } from "@repo/ui/utils";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { IMAGES } from "@/app/_assets";
 import { authApi } from "@/api/auth";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 interface OtpDialogProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface OtpDialogProps {
 }
 
 export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
+  const { setIsAuthenticated } = useAuth();
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -23,6 +25,17 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
   ];
+
+  // Reset OTP values when dialog opens/closes
+  useEffect(() => {
+    setOtpValues(["", "", "", ""]);
+    // Focus first input when dialog opens
+    if (isOpen) {
+      setTimeout(() => {
+        inputRefs[0].current?.focus();
+      }, 100);
+    }
+  }, [isOpen]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -69,9 +82,12 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
         localStorage.setItem("token", response.user.token);
         localStorage.setItem("userId", response.user.userid);
 
+        // Update auth state immediately
+        setIsAuthenticated(true);
+
         toast.success("Sign in successful");
 
-        // Close both dialogs through the parent's onClose
+        // Close dialog and redirect
         onClose();
         router.push("/");
       } else {
@@ -87,7 +103,7 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
 
   const handleResend = async () => {
     try {
-      const response = await authApi.sendOtp(phoneNumber);
+      const response = await authApi.resentOtp(phoneNumber); // Pass phone number directly
       if (response.status === 200) {
         toast.success("OTP resent successfully");
         // Reset OTP inputs
@@ -102,7 +118,15 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          setOtpValues(["", "", "", ""]); // Clear values when dialog closes
+          onClose();
+        }
+      }}
+    >
       <DialogContent className="max-w-[480px] bg-[#1A1A1A] p-12 border-[#f8d48d] border-opacity-25 border-2 rounded-[32px]">
         <div className="flex flex-col items-center pt-10 pb-8">
           <button
