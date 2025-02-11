@@ -8,28 +8,12 @@ import { Button } from "@repo/ui/button";
 import { IMAGES } from "../_assets";
 import { MenuIcon, XIcon } from "lucide-react";
 import { AnimatedBackground } from "./animatedBackground";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
+  const { isAuthenticated, isValidating } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // Check authentication status on mount and token change
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
-    };
-
-    checkAuth();
-
-    // Listen for storage changes (in case of logout from another tab)
-    window.addEventListener("storage", checkAuth);
-
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-    };
-  }, []);
 
   return (
     <nav className="w-full flex justify-between items-center py-4 px-4 lg:px-6 relative z-50">
@@ -118,7 +102,10 @@ export default function Navbar() {
 
       {/* Conditional rendering of Login Button or Profile */}
       <div className="hidden lg:block">
-        {isLoggedIn ? (
+        {isValidating ? (
+          // Show loading state
+          <div className="w-10 h-10 rounded-full bg-neutral-800 animate-pulse" />
+        ) : isAuthenticated ? (
           <Profile />
         ) : (
           <Button onClick={() => setIsLoginOpen(true)} variant="accent">
