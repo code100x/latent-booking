@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import Image from "next/image";
 import { cn } from "@repo/ui/utils";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { IMAGES } from "@/app/_assets";
+import { authApi } from "@/api/auth";
 
 interface OtpDialogProps {
   isOpen: boolean;
@@ -14,43 +14,91 @@ interface OtpDialogProps {
 }
 
 export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
-  const [otp, setOtp] = useState("");
+  const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const inputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
 
-  const handleOtpChange = (otpValue: string) => {
-    setOtp(otpValue);
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtpValues = [...otpValues];
+    newOtpValues[index] = value;
+    setOtpValues(newOtpValues);
+
+    // Move to next input if value is entered
+    if (value !== "" && index < 3) {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    // Move to previous input on backspace if current input is empty
+    if (e.key === "Backspace" && index > 0 && otpValues[index] === "") {
+      inputRefs[index - 1].current?.focus();
+    }
   };
 
   const handleSubmit = async () => {
-    if (otp.length === 6) {
-      setIsSubmitting(true);
-    }
-    console.log("otp", otp, " phone", phoneNumber);
-    const response = await axios.post(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "user/signup/verify",
-      {
-        number: phoneNumber,
-        totp: otp,
-        name: "GUest User",
-      },
-      {
-        withCredentials: true,
+    const otp = otpValues.join("");
+    if (otp.length !== 4) return;
+
+    setIsSubmitting(true);
+    try {
+      const deviceId =
+        "WebBrowser" + Date.now() + Math.random().toString(36).slice(2);
+
+      const response = await authApi.verifyOtp({
+        useremail: phoneNumber,
+        otp: otp,
+        device_id: deviceId,
+        mydeviceid: "",
+        mydeviceid2: "",
+      });
+
+      if (response.status === 200) {
+        // Store token and userId in localStorage
+        localStorage.setItem("token", response.user.token);
+        localStorage.setItem("userId", response.user.userid);
+
+        toast.success("Sign in successful");
+
+        // Close both dialogs through the parent's onClose
+        onClose();
+        router.push("/");
+      } else {
+        toast.error("Invalid OTP");
       }
-    );
-    console.log("Response in the otp", response.data);
-    if (response.status === 200) {
-      toast.success("Singin Successful.");
-    } else {
-      toast.error("Something went wrong.");
+    } catch (error) {
+      toast.error("Failed to verify OTP");
+      console.error("OTP verification error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
-    router.push("/");
   };
 
-  const handleResend = () => {
-    // Implement resend OTP logic
-    console.log("Resend OTP");
+  const handleResend = async () => {
+    try {
+      const response = await authApi.sendOtp(phoneNumber);
+      if (response.status === 200) {
+        toast.success("OTP resent successfully");
+        // Reset OTP inputs
+        setOtpValues(["", "", "", ""]);
+        // Focus first input
+        inputRefs[0].current?.focus();
+      }
+    } catch (error) {
+      toast.error("Failed to resend OTP");
+      console.error("Resend OTP error:", error);
+    }
   };
 
   return (
@@ -82,26 +130,45 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
             </div>
           </div>
 
-          <div className="mb-8">
-            <h2 className={cn("text-white text-2xl mb-1")}>
-              Enter your OTP.{" "}
-              <span>
-                <button
-                  onClick={handleResend}
-                  className="text-neutral-400 text-2xl underline mb-6"
-                >
-                  Resend?
-                </button>
-              </span>
+          <div className="w-full mb-8">
+            <h2 className={cn("text-white text-2xl mb-6 text-center")}>
+              Enter your OTP
             </h2>
+
+            <div className="flex justify-center gap-4">
+              {otpValues.map((value, index) => (
+                <input
+                  key={index}
+                  ref={inputRefs[index]}
+                  type="text"
+                  maxLength={1}
+                  value={value}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  className="w-14 h-14 text-center text-2xl font-semibold 
+                    bg-[#2A2A2A] border-2 border-[#3A3A3A] rounded-xl
+                    focus:border-[#f8d48d] focus:outline-none text-white
+                    transition-colors"
+                />
+              ))}
+            </div>
+
+            <div className="text-center mt-4">
+              <button
+                onClick={handleResend}
+                className="text-neutral-400 text-sm underline"
+              >
+                Resend OTP
+              </button>
+            </div>
           </div>
 
           <button
             onClick={handleSubmit}
-            disabled={otp.length !== 6 || isSubmitting}
+            disabled={otpValues.some((v) => v === "") || isSubmitting}
             className={cn(
-              "w-full mt-10 h-14 text-black font-medium py-4 rounded-xl transition-colors text-lg",
-              otp.length === 6 && !isSubmitting
+              "w-full mt-4 h-14 text-black font-medium py-4 rounded-xl transition-colors text-lg",
+              !otpValues.some((v) => v === "") && !isSubmitting
                 ? "bg-[#F4F4F4] hover:bg-white"
                 : "bg-neutral-400 cursor-not-allowed"
             )}

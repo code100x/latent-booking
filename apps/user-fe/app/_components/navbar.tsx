@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoginDialog } from "./signup/singupDialog";
+import { Profile } from "./signup/profile";
 import { Button } from "@repo/ui/button";
 import { IMAGES } from "../_assets";
 import { MenuIcon, XIcon } from "lucide-react";
@@ -11,6 +12,24 @@ import { AnimatedBackground } from "./animatedBackground";
 export default function Navbar() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status on mount and token change
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+
+    checkAuth();
+
+    // Listen for storage changes (in case of logout from another tab)
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
 
   return (
     <nav className="w-full flex justify-between items-center py-4 px-4 lg:px-6 relative z-50">
@@ -97,13 +116,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      <Button
-        onClick={() => setIsLoginOpen(true)}
-        variant="accent"
-        className="hidden lg:block"
-      >
-        Login
-      </Button>
+      {/* Conditional rendering of Login Button or Profile */}
+      <div className="hidden lg:block">
+        {isLoggedIn ? (
+          <Profile />
+        ) : (
+          <Button onClick={() => setIsLoginOpen(true)} variant="accent">
+            Login
+          </Button>
+        )}
+      </div>
 
       {/* Login Dialog */}
       <LoginDialog isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
