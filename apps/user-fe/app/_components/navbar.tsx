@@ -1,14 +1,17 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LoginDialog } from "./signup/singupDialog";
+import { Profile } from "./signup/profile";
 import { Button } from "@repo/ui/button";
 import { IMAGES } from "../_assets";
 import { MenuIcon, XIcon } from "lucide-react";
 import { AnimatedBackground } from "./animatedBackground";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
+  const { isAuthenticated } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -97,13 +100,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      <Button
-        onClick={() => setIsLoginOpen(true)}
-        variant="accent"
-        className="hidden lg:block"
-      >
-        Login
-      </Button>
+      {/* Conditional rendering of Login Button or Profile */}
+      <div className="hidden lg:block">
+        {isAuthenticated ? (
+          <Profile />
+        ) : (
+          <Button onClick={() => setIsLoginOpen(true)} variant="accent">
+            Login
+          </Button>
+        )}
+      </div>
 
       {/* Login Dialog */}
       <LoginDialog isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />

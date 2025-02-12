@@ -45,3 +45,5 @@ export const IMAGES = {
   OtpGirl,
   curtain,
 };
+
+export { playStore, mobile, appStore, Amic };

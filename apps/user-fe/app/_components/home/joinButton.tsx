@@ -8,9 +8,11 @@ export function JoinButton() {
         "hover:opacity-90 transition-opacity w-fit shadow-[0_0_15px_rgba(170,130,61,0.3)]"
       )}
     >
-      <span className="text-neutral-950 text-lg font-semibold">
-        Join Latent+
-      </span>
+      <a href="/premium">
+        <span className="text-neutral-950 text-lg font-semibold">
+          Join Latent+
+        </span>
+      </a>
     </button>
   );
 }

@@ -6,13 +6,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSignUpSchema } from "@repo/common/types";
 import Link from "next/link";
-import axios from "axios";
 import { Loader } from "lucide-react";
 import { OtpDialog } from "./otp-dialog";
 import { z } from "zod";
 import { IMAGES } from "@/app/_assets";
 import { Button } from "@repo/ui/button";
 import { Input } from "@repo/ui/input";
+import { authApi } from "@/api/auth";
+
 interface LoginDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,15 +38,7 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
     const phoneNumber = getValues("number");
     setLoading(true);
     try {
-      const response = await axios.post(
-        apiEndPoint,
-        {
-          number: process.env.NEXT_PUBLIC_PHONE_PREFIX + phoneNumber,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await authApi.sendOtp(phoneNumber);
 
       if (response.status === 200) {
         setShowOtp(true);
@@ -57,15 +50,14 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
     }
   };
 
+  const handleMainDialogClose = () => {
+    setShowOtp(false);
+    onClose();
+  };
+
   return (
     <>
-      <Dialog
-        open={isOpen && !showOtp}
-        onOpenChange={() => {
-          setShowOtp(false);
-          onClose();
-        }}
-      >
+      <Dialog open={isOpen && !showOtp} onOpenChange={handleMainDialogClose}>
         <DialogContent className="max-w-[480px] max-h-[90vh] bg-background p-12 !rounded-3xl">
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -152,9 +144,9 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
       </Dialog>
 
       <OtpDialog
-        phoneNumber={process.env.NEXT_PUBLIC_PHONE_PREFIX + getValues("number")}
-        isOpen={showOtp}
-        onClose={() => setShowOtp(false)}
+        phoneNumber={getValues("number")}
+        isOpen={showOtp && isOpen}
+        onClose={handleMainDialogClose}
       />
     </>
   );
