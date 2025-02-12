@@ -12,8 +12,8 @@ export function PremiumFeatures() {
   ];
 
   return (
-    <div className="relative">
-      <div className="rounded-[24px] bg-[#1A1A1A] border border-[#aa823d]/20 p-12 relative">
+    <div className="mt-16 relative">
+      <div className="rounded-[24px] bg-[#1A1A1A] border border-[#aa823d]/20 p-12 relative shadow-[0px_0px_120px_5px_rgba(170,130,61,0.4)]">
         {/* Glow effect */}
         <div className="absolute inset-0 bg-[#aa823d] opacity-[0.03] blur-[100px]" />
 
@@ -45,7 +45,9 @@ export function PremiumFeatures() {
           <div className="space-y-8 w-[480px] ml-auto">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <BadgeCheckIcon className="w-6 h-6 text-[#AA823D] flex-shrink-0" />
+                <div>
+                  <BadgeCheckIcon className="w-6 h-6 text-[#AA823D] flex-shrink-0" />
+                </div>
                 <span
                   className={cn(
                     "text-neutral-50 text-2xl font-thin leading-10"

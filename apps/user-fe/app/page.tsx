@@ -3,6 +3,7 @@ import FooterCta from "./_components/home/footer-cta";
 import { LatentEpisodes } from "./_components/latentEpisodes";
 import { LatentPlusEpisodes } from "./_components/latentPlusEpisodes";
 import EventsRow from "./_components/eventsRow";
+import { PremiumFeatures } from "./_components/home/premiumFeature";
 export default function Home() {
   return (
     <>
@@ -12,7 +13,7 @@ export default function Home() {
           <EventsRow />
           <LatentEpisodes />
           <LatentPlusEpisodes />
-          {/* <FooterCta /> */}
+          <PremiumFeatures />
         </div>
       </main>
     </>
