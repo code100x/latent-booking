@@ -1,0 +1,4 @@
+# routes to implement
+0. prisma setup
+1. signup
+2. login -> sendOTP, VerifyOTP

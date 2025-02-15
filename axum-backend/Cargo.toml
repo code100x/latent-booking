@@ -1,0 +1,22 @@
+[package]
+name = "axum-backend"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["prisma-cli"]
+resolver = "2"
+
+[dependencies]
+axum = "0.8.2"
+tokio = { version = "1.43.0", features = ["full"] }
+dotenv = "0.15.0"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+tower-http = { version = "0.6.2", features = ["cors"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+prisma-client-rust = { git = "https://github.com/Brendonovich/prisma-client-rust", tag = "0.6.11" }
+validator = { version = "0.20.0", features = ["derive"] }
+sha2 = "0.10"
+reqwest = "0.12.12"
