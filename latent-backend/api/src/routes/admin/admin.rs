@@ -3,7 +3,7 @@ use std::env;
 use log::info;
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, AppState, utils::totp};
+use crate::{error::AppError, AppState};
 use serde::{Deserialize, Serialize};
 use jsonwebtoken::{encode, Header};
 
@@ -95,7 +95,7 @@ impl AdminApi {
         
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));

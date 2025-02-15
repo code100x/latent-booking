@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState};
 
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -88,7 +88,7 @@ impl UserApi {
         
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));
@@ -135,7 +135,7 @@ impl UserApi {
 
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));

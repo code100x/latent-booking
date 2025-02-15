@@ -1,6 +1,7 @@
 use chrono::{Duration, TimeZone, Utc};
 use poem::web::Data;
 use poem_openapi::payload;
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::{
     env,
@@ -11,12 +12,25 @@ use crate::{error::AppError, AppState};
 use sqlx::Error;
 
 const TIME_STEP: u64 = 30; // 30 seconds
+
+#[derive(Serialize)]
+struct SmsParams<'a> {
+    userid: &'a str,
+    password: &'a str,
+    send_to: &'a str,
+    msg: &'a str,
+    method: &'a str,
+    msg_type: &'a str,
+    format: &'a str,
+    auth_scheme: &'a str,
+    v: &'a str,
+}
+
 pub struct SmsService {
     client: reqwest::Client,
     gupshup_url: String,
     gupshup_uid: String,
     gupshup_pass: String,
-    template_id: String,
 }
 
 impl Default for SmsService {
@@ -26,7 +40,6 @@ impl Default for SmsService {
             gupshup_url: env::var("GUPSHUP_URL").unwrap(),
             gupshup_uid: env::var("GUPSHUP_UID").unwrap(),
             gupshup_pass: env::var("GUPSHUP_PASS").unwrap(),
-            template_id: env::var("TEMPLATE_ID").unwrap(),
         }
     }
 }
@@ -36,7 +49,7 @@ impl SmsService {
         &self,
         state: Data<&AppState>,
         number: String,
-        _otp: String,
+        otp: String,
     ) -> Result<(), AppError> {
         if !self.can_send_otp(&state, &number).await? {
             return Err(AppError::RateLimitted(payload::Json(
@@ -46,10 +59,20 @@ impl SmsService {
             )));
         }
 
-        // update db count :TODO: Make sure to move this line below before push
-        let _ = state.db.update_otpc_by_number(&number).await?;
+        let params = SmsParams {
+            userid: &self.gupshup_uid,
+            password: &self.gupshup_pass,
+            send_to: &number,
+            msg: &format!("Your OTP for the Latent app is {otp}"),
+            method: "sendMessage",
+            msg_type: "text",
+            format: "json",
+            auth_scheme: "plain",
+            v: "1.1",
+        };
 
-        let _ = self.client.post(&self.gupshup_url).body("").send().await?;
+        let _ = self.client.post(&self.gupshup_url).form(&params).header("Content-Type", "application/x-www-form-urlencoded").send().await?;
+        let _ = state.db.update_otpc_by_number(&number).await?;
 
         Ok(())
     }
@@ -93,10 +116,4 @@ impl SmsService {
         let current = self.generate_otp(key, salt).await;
         token == current
     }
-}
-
-#[derive(Debug)]
-pub enum OtpError {
-    RequestErr(reqwest::Error),
-    ResponseErr(u16),
 }
