@@ -3,7 +3,7 @@ use std::env;
 use log::info;
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState};
 use serde::{Deserialize, Serialize};
 use jsonwebtoken::{encode, Header};
 
@@ -54,15 +54,11 @@ impl AdminApi {
         let admin = state.db.create_admin(number.clone()).await?;
 
         // Generate and send OTP
-        let otp = totp::get_token(&number, "SUPERADMIN");
-        if cfg!(not(debug_assertions)) {
-            twilio::send_message(&format!("Your OTP for signing up to Latent is {}", otp), &number)
-                .await
-                .map_err(|_| AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
-                    message: "Failed to send OTP".to_string(),
-                })))?;
-        } else {
-            println!("Development mode: OTP is {}", otp);
+        let otp = state.sms_service.generate_otp(&number, "AUTH").await;
+        if cfg!(not(debug_assertions)){
+            let _ = state.sms_service.send_otp(state, number,  otp).await?;
+        }else {
+            println!("Development Mode OTP is {}", otp)
         }
 
         let admin_secret  =  env::var("ADMIN_JWT_PASSWORD").unwrap_or_else(|_| "admin".to_string());
@@ -99,7 +95,7 @@ impl AdminApi {
         
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));

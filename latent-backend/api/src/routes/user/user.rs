@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use poem::web::{Data, Json};
 use poem_openapi::{OpenApi, Object, payload};
-use crate::{error::AppError, AppState, utils::{totp, twilio}};
+use crate::{error::AppError, AppState};
 
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -64,25 +64,13 @@ impl UserApi {
         let number = body.0.number;
         let user = state.db.create_user(number.clone()).await?;
 
-        // Generate and send OTP
-        let otp = totp::get_token(&number, "AUTH");
-        if cfg!(not(debug_assertions)) {
-            twilio::send_message(&format!("Your OTP for signing up to Latent is {}", otp), &number)
-                .await
-                .map_err(|_| AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
-                    message: "Failed to send OTP".to_string(),
-                })))?;
-        } else {
-            println!("Development mode: OTP is {}", otp);
+        let otp = state.sms_service.generate_otp(&number, "AUTH").await;
+        if cfg!(not(debug_assertions)){
+            let _ = state.sms_service.send_otp(state, number,  otp).await?;
+        }else {
+            println!("Development Mode OTP is {}", otp)
         }
-
-
-        twilio::send_message(&format!("Your OTP for signing up to Latent is {}", otp), &number)
-        .await
-        .map_err(|_| AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
-            message: "Failed to send OTP".to_string(),
-        })))?;
-
+        
         Ok(payload::Json(CreateUserResponse {
             message: "User created successfully".to_string(),
             id: user.id.to_string(),
@@ -100,7 +88,7 @@ impl UserApi {
         
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));
@@ -124,15 +112,11 @@ impl UserApi {
         let _user = state.db.get_user_by_number(&number).await?;
         
         // Generate and send OTP
-        let otp = totp::get_token(&number, "AUTH");
-        if cfg!(not(debug_assertions)) {
-            twilio::send_message(&format!("Your OTP for signing in to Latent is {}", otp), &number)
-                .await
-                .map_err(|_| AppError::InternalServerError(payload::Json(crate::error::ErrorBody {
-                    message: "Failed to send OTP".to_string(),
-                })))?;
-        } else {
-            println!("Development mode: OTP is {}", otp);
+        let otp = state.sms_service.generate_otp(&number, "AUTH").await;
+        if cfg!(not(debug_assertions)){
+            let _ = state.sms_service.send_otp(state, number,  otp).await?;
+        }else {
+            println!("Development Mode OTP is {}", otp)
         }
 
         Ok(payload::Json(SignInResponse {
@@ -151,7 +135,7 @@ impl UserApi {
 
         // Verify OTP
         if cfg!(not(debug_assertions)) {
-            if !totp::verify_token(&number, "AUTH", &otp) {
+            if !state.sms_service.verify_otp(&number, "AUTH", &otp).await {
                 return Err(AppError::InvalidCredentials(payload::Json(crate::error::ErrorBody {
                     message: "Invalid OTP".to_string(),
                 })));
