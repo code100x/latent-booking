@@ -7,17 +7,19 @@
       }
     ],
     "jsx": "preserve",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
     "next.config.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "app/_components/footer.tsx",
+    "app/_components/navbar.tsx"
   ],
-  "paths": {
-    "@/*": ["./*"]
-  },
-"exclude": ["node_modules"]
+  "exclude": ["node_modules"]
 }

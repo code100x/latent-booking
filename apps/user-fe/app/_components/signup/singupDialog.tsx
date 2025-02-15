@@ -1,18 +1,18 @@
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import Image from "next/image";
 import { cn } from "@repo/ui/utils";
-import { figtree, manrope } from "../../lib/fonts";
 import { useState } from "react";
-import { MaheepSingh } from "../../assets";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSignUpSchema } from "@repo/common/types";
 import Link from "next/link";
 import axios from "axios";
-import { Loader } from 'lucide-react';
+import { Loader } from "lucide-react";
 import { OtpDialog } from "./otp-dialog";
 import { z } from "zod";
-
+import { IMAGES } from "@/app/_assets";
+import { Button } from "@repo/ui/button";
+import { Input } from "@repo/ui/input";
 interface LoginDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -66,16 +66,16 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
           onClose();
         }}
       >
-        <DialogContent className="max-w-[480px] max-h-[750px] bg-[#1A1A1A] p-12 border-[#f8d48d] border-opacity-25 border-2 rounded-[32px]">
+        <DialogContent className="max-w-[480px] max-h-[90vh] bg-background p-12 !rounded-3xl">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col items-center pt-10 pb-8"
+            className="flex flex-col items-center gap-4"
           >
-            <div className="relative mb-8">
-              <div className="w-[216px] h-[216px] rounded-full overflow-hidden">
+            <div className="relative">
+              <div className="size-[180px] rounded-full overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#fdffe0] via-[#f7ca7f] to-[#f4b45a] rounded-full" />
                 <Image
-                  src={MaheepSingh}
+                  src={IMAGES.MaheepSingh}
                   alt="Maheep Singh"
                   width={240}
                   height={240}
@@ -88,53 +88,49 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
               </div>
             </div>
 
-            <div className="mb-8">
-              <h2 className={cn("text-white text-2xl mb-1", figtree.className)}>
-                Enter your phone number or email,{" "}
-                <span className="text-neutral-400 text-2xl">
-                  we promise no spam.
-                </span>
-              </h2>
-            </div>
+            <h2 className="text-white text-2xl text-center">
+              Enter your phone number or email,{" "}
+              <span className="text-neutral-400 text-2xl">
+                we promise no spam.
+              </span>
+            </h2>
 
-            <input
+            <Input
               {...register("number")}
               type="text"
-              placeholder="9876543***"
-              className={cn(
-                "w-full h-14 bg-transparent border rounded-xl px-5 py-6 text-white mb-4 focus:outline-none focus:border-[#F8D48D] placeholder-neutral-400 text-lg",
-                errors.number ? "border-red-500" : "border-[#333333]"
-              )}
+              placeholder="98765 43210"
+              className="rounded-lg text-base"
             />
             {errors.number && (
-              <p className="text-red-500 text-sm mb-4">
-                {errors.number.message}
-              </p>
+              <p className="text-red-500 text-sm">{errors.number.message}</p>
             )}
 
             <div className="w-full space-y-3">
-              <button
+              <Button
                 type="submit"
-                disabled= {loading ? true : false}
-                className="w-full h-14 bg-[#F4F4F4] text-black font-medium py-4  flex justify-center items-center rounded-xl hover:bg-white transition-colors text-lg"
+                disabled={loading ? true : false}
+                className="w-full"
+                variant="accent"
+                size="lg"
               >
                 {loading ? <Loader className="animate-spin" /> : "Next"}
-              </button>
+              </Button>
 
               <div className="w-full h-[1px] bg-[#333333]" />
 
-              <button
+              <Button
                 type="button"
-                className="w-full h-14 bg-[#F4F4F4] text-black font-medium py-4 rounded-xl hover:bg-white transition-colors text-lg"
+                variant="secondary"
+                size="lg"
+                className="w-full"
               >
                 Continue with Google
-              </button>
+              </Button>
             </div>
 
             <div
               className={cn(
-                "text-neutral-400 text-sm mt-6 text-center flex flex-col gap-1",
-                manrope.className
+                "text-neutral-400 text-sm mt-6 text-center flex flex-col gap-1"
               )}
             >
               <p>By starting the onboarding you agree to the</p>

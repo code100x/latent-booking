@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { Dialog, DialogContent } from "@repo/ui/dialog";
 import Image from "next/image";
 import { cn } from "@repo/ui/utils";
-import { manrope } from "../../lib/fonts";
-import { OtpGirl } from "../../assets";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@repo/ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { IMAGES } from "@/app/_assets";
 
 interface OtpDialogProps {
   isOpen: boolean;
@@ -74,7 +72,7 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
             <div className="w-[216px] h-[216px] rounded-full overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-[#fdffe0] via-[#f7ca7f] to-[#f4b45a] rounded-full" />
               <Image
-                src={OtpGirl}
+                src={IMAGES.OtpGirl}
                 alt="OTP Girl"
                 width={240}
                 height={240}
@@ -85,7 +83,7 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
           </div>
 
           <div className="mb-8">
-            <h2 className={cn("text-white text-2xl mb-1", manrope.className)}>
+            <h2 className={cn("text-white text-2xl mb-1")}>
               Enter your OTP.{" "}
               <span>
                 <button
@@ -97,35 +95,6 @@ export function OtpDialog({ isOpen, onClose, phoneNumber }: OtpDialogProps) {
               </span>
             </h2>
           </div>
-
-          <InputOTP maxLength={6} value={otp} onChange={handleOtpChange}>
-            <InputOTPGroup>
-              <InputOTPSlot
-                index={0}
-                className="border p-5 ml-1 border-slate-500"
-              />
-              <InputOTPSlot
-                index={1}
-                className="border p-5 ml-1 border-slate-500"
-              />
-              <InputOTPSlot
-                index={2}
-                className="border p-5 ml-1 border-slate-500"
-              />
-              <InputOTPSlot
-                index={3}
-                className="border p-5 ml-1 border-slate-500"
-              />
-              <InputOTPSlot
-                index={4}
-                className="border p-5 ml-1 border-slate-500"
-              />
-              <InputOTPSlot
-                index={5}
-                className="border p-5 ml-1 border-slate-500"
-              />
-            </InputOTPGroup>
-          </InputOTP>
 
           <button
             onClick={handleSubmit}

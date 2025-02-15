@@ -1,28 +1,51 @@
 import { cn } from "@repo/ui/utils";
 import Image from "next/image";
-import { figtree } from "../../lib/fonts";
-import { latentEpisode } from "../../assets";
+import Link from "next/link";
 
-export function EpisodeCard({ className }: { className?: string }) {
+interface EpisodeCardProps {
+  className?: string;
+  title: string;
+  thumbnail: string;
+  episodeNumber: number;
+  youtubeId: string;
+}
+
+export function EpisodeCard({
+  className,
+  title,
+  thumbnail,
+  episodeNumber,
+  youtubeId,
+}: EpisodeCardProps) {
   return (
-    <div className={cn("space-y-4", className)}>
-      {/* Image Container with Full Rounded Corners */}
-      <div className="relative rounded-[24px] overflow-hidden ">
-        <Image
-          src={latentEpisode}
-          alt="Episode Thumbnail"
-          width={400}
-          height={225}
-          className="object-cover w-full aspect-[16/9] border-[#f8d48d]  border-opacity-25 border-2"
-        />
-        {/* Episode Number Badge */}
-      </div>
+    <Link href={`https://youtube.com/watch?v=${youtubeId}`} target="_blank">
+      <div
+        className={cn(
+          "flex flex-col gap-2 min-w-[340px] w-full md:max-w-[340px] group",
+          className
+        )}
+      >
+        <div className="relative overflow-hidden aspect-[16/9] rounded-2xl">
+          <Image
+            src={thumbnail}
+            alt={title}
+            width={400}
+            height={225}
+            className="object-cover w-full transition-transform duration-300"
+          />
+          <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-md">
+            <span className="text-sm font-medium">EP {episodeNumber}</span>
+          </div>
+        </div>
 
-      {/* Title Text */}
-      <p className={cn("text-neutral-50 text-lg", figtree.className)}>
-        India&apos;s Got Latent ft. @Ashish Chanchalani, @Beer Biceps, @Rebel
-        Kid
-      </p>
-    </div>
+        <p
+          className={cn(
+            "text-neutral-50 line-clamp-2 group-hover:text-[#F8D48D] transition-colors"
+          )}
+        >
+          {title}
+        </p>
+      </div>
+    </Link>
   );
 }

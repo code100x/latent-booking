@@ -9,8 +9,10 @@
     "./code": "./src/code.tsx",
     "./dialog": "./src/dialog.tsx",
     "./form": "./src/form.tsx",
-    "./label": "./src/label.tsx", 
-    "./input": "./src/input.tsx"
+    "./label": "./src/label.tsx",
+    "./input": "./src/input.tsx",
+    "./select": "./src/select.tsx",
+    "./sonner": "./src/sonner.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
