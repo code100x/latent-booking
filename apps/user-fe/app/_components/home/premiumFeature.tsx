@@ -1,8 +1,6 @@
 import { cn } from "@repo/ui/utils";
-import { figtree, manrope } from "../../lib/fonts";
 import { JoinButton } from "./joinButton";
-import { checkBadge } from "../../assets";
-import Image from "next/image";
+import { BadgeCheckIcon } from "lucide-react";
 
 export function PremiumFeatures() {
   const features = [
@@ -14,8 +12,8 @@ export function PremiumFeatures() {
   ];
 
   return (
-    <div className="mt-16 relative">
-      <div className="rounded-[24px] bg-[#1A1A1A] border border-[#aa823d]/20 p-12 relative shadow-[0px_0px_120px_5px_rgba(170,130,61,0.4)]">
+    <div className="relative">
+      <div className="rounded-[24px] bg-[#1A1A1A] border border-[#aa823d]/20 p-12 relative">
         {/* Glow effect */}
         <div className="absolute inset-0 bg-[#aa823d] opacity-[0.03] blur-[100px]" />
 
@@ -23,12 +21,7 @@ export function PremiumFeatures() {
           {/* Left section */}
           <div className="space-y-10 ">
             <div className="space-y-4">
-              <h2
-                className={cn(
-                  "text-[40px] leading-tight font-bold",
-                  manrope.className
-                )}
-              >
+              <h2 className={cn("text-[40px] leading-tight font-bold")}>
                 <span className="text-neutral-50">Upgrade to </span>
                 <span className="bg-gradient-to-r from-[#AA823D] via-[#EFE288] to-[#D1B85A] text-transparent bg-clip-text">
                   Latent+
@@ -36,8 +29,7 @@ export function PremiumFeatures() {
               </h2>
               <p
                 className={cn(
-                  "text-neutral-200 text-lg leading-relaxed max-w-[600px]",
-                  figtree.className
+                  "text-neutral-200 text-lg leading-relaxed max-w-[600px]"
                 )}
               >
                 Elevate your fandom by becoming a Samay ke Dost, a Samay ke
@@ -53,13 +45,10 @@ export function PremiumFeatures() {
           <div className="space-y-8 w-[480px] ml-auto">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <div>
-                  <Image aria-hidden src={checkBadge} alt="latentPremium" />
-                </div>
+                <BadgeCheckIcon className="w-6 h-6 text-[#AA823D] flex-shrink-0" />
                 <span
                   className={cn(
-                    "text-neutral-50 text-2xl font-thin leading-10",
-                    figtree.className
+                    "text-neutral-50 text-2xl font-thin leading-10"
                   )}
                 >
                   {feature}

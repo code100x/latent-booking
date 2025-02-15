@@ -7,6 +7,11 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../apps/user-fe/components/marquee.tsx",
+    "../../apps/user-fe/components/footer.tsx",
+    "../../apps/user-fe/components/navbar.tsx"
+  ],
   "exclude": ["node_modules", "dist"]
 }
